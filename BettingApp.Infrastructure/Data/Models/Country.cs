@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static BettingApp.Infrastructure.Data.Constants.DataConstants.Country;
+using static BettingApp.Infrastructure.Data.Constants.DataConstants.Common;
 
 namespace BettingApp.Infrastructure.Data.Models
 {
@@ -11,6 +12,9 @@ namespace BettingApp.Infrastructure.Data.Models
         [Required]
         [StringLength(NameMaxLength)]
         public string Name { get; set; } = null!;
+
+        [StringLength(ImageUrlMaxLength)]
+        public string? ImageUrl { get; set; }
 
         public IEnumerable<Competition> Competitions { get; set; }
             = new List<Competition>();

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BettingApp.Infrastructure.Data.Constants.DataConstants.Team;
+using static BettingApp.Infrastructure.Data.Constants.DataConstants.Common;
 
 namespace BettingApp.Infrastructure.Data.Models
 {
@@ -19,6 +20,9 @@ namespace BettingApp.Infrastructure.Data.Models
         public int CountryId { get; set; }
         [ForeignKey(nameof(CountryId))]
         public Country Country { get; set; } = null!;
+
+        [StringLength(ImageUrlMaxLength)]
+        public string? ImageUrl { get; set; }
 
         public List<Employee> Employees { get; set; }
             = new List<Employee>();

@@ -1,4 +1,5 @@
-﻿using BettingApp.Models;
+﻿using BettingApp.Core.Contracts;
+using BettingApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,9 +7,18 @@ namespace BettingApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IGameService gameService;
+
+        public HomeController(IGameService _gameService)
         {
-            return View();
+            gameService = _gameService;
+        }
+
+        public async Task<IActionResult> Index()
+        {   
+            var model = await gameService.NextTenGames();
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

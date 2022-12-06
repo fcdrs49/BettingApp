@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BettingApp.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(BettingAppDbContext))]
     [Migration("20221126080732_InitialMigration")]
     partial class InitialMigration
     {

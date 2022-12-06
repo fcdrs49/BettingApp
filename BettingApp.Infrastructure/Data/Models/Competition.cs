@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BettingApp.Infrastructure.Data.Constants.DataConstants.Competition;
+using static BettingApp.Infrastructure.Data.Constants.DataConstants.Common;
 
 namespace BettingApp.Infrastructure.Data.Models
 {
@@ -21,6 +22,9 @@ namespace BettingApp.Infrastructure.Data.Models
         public int? CountryId { get; set; }
         [ForeignKey(nameof(CountryId))]
         public Country? Country { get; set; }
+
+        [StringLength(ImageUrlMaxLength)]
+        public string? ImageUrl { get; set; }
 
         [Required]
         public int SeasonId { get; set; }

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BettingApp.Infrastructure.Data.Constants.DataConstants.Employee;
+using static BettingApp.Infrastructure.Data.Constants.DataConstants.Common;
 
 namespace BettingApp.Infrastructure.Data.Models
 {
@@ -22,6 +23,9 @@ namespace BettingApp.Infrastructure.Data.Models
 
         [Required]
         public DateTime BirthDate { get; set; }
+
+        [StringLength(ImageUrlMaxLength)]
+        public string? ImageUrl { get; set; }
 
         [Required]
         public int CountryId { get; set; }

@@ -1,8 +1,64 @@
-﻿@{
+﻿@model IEnumerable<GameViewModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+<div class="container">
+@foreach (var match in Model)
+{
+	<div class="container">
+		<div class="match">
+			<div class="match-header">
+				<div class="match-status">Upcoming</div>
+				<div class="match-tournament">
+					<img src="@match.Competition.ImageUrl" />
+					@match.Competition
+				</div>
+				<div class="match-actions">
+				
+				</div>
+			</div>
+			<div class="match-content">
+				<div class="column">
+					<a asp-action="Details" asp-controller="Team" asp-route-id="@match.HomeTeam.Id">
+						<div class="team team--home">
+							<div class="team-logo">
+								<img src="@match.HomeTeam.ImageUrl" />
+							</div>
+							<h2 class="team-name">@match.HomeTeam.Name</h2>
+						</div>
+					</a>
+				</div>
+				<div class="column">
+					<div class="match-details">
+						<div class="match-date">
+							@match.Date
+						</div>
+						<div class="match-bet-options">
+							<button class="match-bet-option">@match.HomeRate</button>
+							<button class="match-bet-option">@match.DrawRate</button>
+							<button class="match-bet-option">@match.AwayRate</button>
+						</div>
+						@if (User.Identity != null && User.Identity.IsAuthenticated)
+						{
+							<button class="match-bet-place">Place Bet</button>
+						}
+					</div>
+				</div>
+				<div class="column">
+					<a asp-action="Details" asp-controller="Team" asp-route-id="@match.AwayTeam.Id">
+						<div class="team team--away">
+							<div class="team-logo">
+								<img src="@match.AwayTeam.ImageUrl" />
+							</div>
+							<h2 class="team-name"> @match.AwayTeam.Name</h2>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+}
 </div>

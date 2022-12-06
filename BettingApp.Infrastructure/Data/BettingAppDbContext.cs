@@ -5,9 +5,9 @@ using System.Reflection.Emit;
 
 namespace BettingApp.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class BettingAppDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public BettingAppDbContext(DbContextOptions<BettingAppDbContext> options)
             : base(options)
         {
         }
@@ -35,6 +35,8 @@ namespace BettingApp.Infrastructure.Data
                 .HasForeignKey(g => g.AwayTeamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.ApplyConfigurationsFromAssembly(typeof(BettingAppDbContext).Assembly);
+
             base.OnModelCreating(builder);
         }
 
@@ -43,6 +45,8 @@ namespace BettingApp.Infrastructure.Data
         public DbSet<Competition> Competitions { get; set; }
 
         public DbSet<Country> Countries { get; set; }
+
+        public DbSet<Currency> Currencies { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
 
