@@ -8,5 +8,6 @@ namespace BettingApp.Core.Contracts
         public Task<EmployeeViewModel> GetDetailsByIdAsync(int id);
         public Task EditAsync(EmployeeFormModel model);
         public Task<IEnumerable<EmployeeViewModel>> GetAllAsync();
+        public Task CreateAsync(EmployeeFormModel model);
     }
 }

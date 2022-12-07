@@ -15,6 +15,8 @@ namespace BettingApp.Core.Models.Employee
 
         public string? ImageUrl { get; set; }
 
+        public string? CountryImageUrl { get; set; }
+
         public int? TeamId { get; set; }
 
         public string? Team { get; set; }

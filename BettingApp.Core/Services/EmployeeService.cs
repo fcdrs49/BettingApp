@@ -58,7 +58,9 @@ namespace BettingApp.Core.Services
                     FirstName = e.FirstName,
                     LastName = e.LastName,
                     ImageUrl = e.ImageUrl,
-                    Country = e.Country.Name
+                    Country = e.Country.Name,
+                    CountryImageUrl = e.Country.ImageUrl,
+                    Team = e.Team != null ? e.Team.Name : String.Empty
                 })
                 .ToListAsync();
         }
@@ -75,8 +77,26 @@ namespace BettingApp.Core.Services
                 LastName = emp.LastName,
                 ImageUrl = emp.ImageUrl,
                 Team = emp.Team?.Name,
-                TeamId = emp.TeamId
+                TeamId = emp.TeamId,
+                CountryImageUrl = emp.Country.ImageUrl
             };
+        }
+
+        public async Task CreateAsync(EmployeeFormModel model)
+        {
+            var employee = new Employee()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                BirthDate = model.BirthDate,
+                CountryId = model.CountryId,
+                EmployeeType = model.EmployeeType,
+                ImageUrl = model.ImageUrl,
+                TeamId = model.TeamId
+            };
+
+            await repo.AddAsync(employee);
+            await repo.SaveChangesAsync();
         }
     }
 }

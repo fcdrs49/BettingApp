@@ -12,7 +12,7 @@
         <h1>Employees</h1>
         @foreach (var emp in Model.Employees)
         {
-            @await Html.PartialAsync("../Shared/_PlayerCardPartial.cshtml", emp);
+            @await Html.PartialAsync("../Shared/_EmployeeCardPartial.cshtml", emp);
         }
     </div>
   </div>

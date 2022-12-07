@@ -1,5 +1,6 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Employee;
+using BettingApp.Core.Models.Team;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BettingApp.Controllers
@@ -48,12 +49,27 @@ namespace BettingApp.Controllers
         }
 
         [HttpGet]
-        public async Task Create()
+        public async Task<IActionResult> Add()
         {
             var model = new EmployeeFormModel();
 
             model.Countries = await countryService.GetAllAsync();
             model.Teams = await teamService.GetAllAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(EmployeeFormModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await employeeService.CreateAsync(model);
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

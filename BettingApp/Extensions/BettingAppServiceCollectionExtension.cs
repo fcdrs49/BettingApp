@@ -13,6 +13,7 @@ public static class BettingAppServiceCollectionExtension
         services.AddScoped<ICompetitionService, CompetitionService>();
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<ICountryService, CountryService>();
+        services.AddScoped<IEmployeeService, EmployeeService>();
 
         return services;
     }
