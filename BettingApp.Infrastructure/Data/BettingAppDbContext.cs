@@ -35,6 +35,10 @@ namespace BettingApp.Infrastructure.Data
                 .HasForeignKey(g => g.AwayTeamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedOnAdd();
+
             builder.ApplyConfigurationsFromAssembly(typeof(BettingAppDbContext).Assembly);
 
             base.OnModelCreating(builder);

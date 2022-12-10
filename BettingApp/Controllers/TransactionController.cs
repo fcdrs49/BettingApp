@@ -11,10 +11,5 @@ namespace BettingApp.Controllers
         {
             transactionService = _transactionService;
         }
-
-        public async Task<IActionResult> All()
-        { 
-            return View(await transactionService.GetAllAsync());
-        }
     }
 }

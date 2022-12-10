@@ -5,10 +5,6 @@ namespace BettingApp.Core.Models.Transaction
 {
     public class TransactionModel
     {
-        public int Id { get; set; }
-
-        public string User { get; set; } = null!;
-
         [Display(Name = "Transaction Type")]
         public string TransactionType { get; set; } = null!;
 
@@ -16,5 +12,8 @@ namespace BettingApp.Core.Models.Transaction
 
         [Display(Name = "Currency Code")]
         public string CurrencyCode { get; set; } = null!;
+
+        [Display(Name = "Date")]
+        public DateTime DateTime { get; set; }
     }
 }

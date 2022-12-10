@@ -10,24 +10,31 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
 
-        public TransactionService(IRepository _repo)
+        public TransactionService(
+            IRepository _repo)
         {
             repo = _repo;
         }
 
-
-        public async Task<IEnumerable<TransactionModel>> GetAllAsync()
+        public async Task<IEnumerable<TransactionModel>> GetByUserAsync(string userId)
         {
             return await repo.AllReadonly<Transaction>()
+                .Where(t => t.UserId == userId)
                 .Select(t => new TransactionModel()
                 {
-                    User = t.User.UserName,
                     Amount = t.Amount,
                     CurrencyCode = t.CurrencyCode,
-                    Id = t.Id,
-                    TransactionType = t.TransactionType.ToString()
+                    TransactionType = t.TransactionType.ToString(),
+                    DateTime = t.DateTime
                 })
                 .ToListAsync();
+        }
+
+        public decimal GetTotalAsync(string userId)
+        {
+            return repo.AllReadonly<Transaction>()
+                .Where(t => t.UserId == userId)
+                .Sum(t => t.Amount);
         }
     }
 }

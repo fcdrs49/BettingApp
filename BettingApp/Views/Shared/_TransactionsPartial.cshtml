@@ -1,0 +1,42 @@
+﻿@model IEnumerable<TransactionModel>
+
+@if(Model.Count() == 0)
+{
+    <h1>No transaction history!</h1>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                @Html.DisplayNameFor(model => model.DateTime)
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayNameFor(model => model.TransactionType)
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayNameFor(model => model.Amount)
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayNameFor(model => model.CurrencyCode)
+            </div>
+        </div>
+        @foreach (var transaction in Model)
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    @transaction.DateTime
+                </div>
+                <div class="col-md-4">
+                    @transaction.TransactionType
+                </div>
+                <div class="col-md-4">
+                    @transaction.Amount
+                </div>
+                <div class="col-md-4">
+                    @transaction.CurrencyCode
+                </div>
+            </div>
+        }
+    </div>
+}

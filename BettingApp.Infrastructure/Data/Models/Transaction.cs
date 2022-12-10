@@ -21,6 +21,8 @@ namespace BettingApp.Infrastructure.Data.Models
         [Precision(18,2)]
         public decimal Amount { get; set; }
 
+        public DateTime DateTime { get; set; }
+
         public string CurrencyCode { get; set; } = null!;
         [ForeignKey(nameof(CurrencyCode))]
         public Currency Currency { get; set; } = null!;

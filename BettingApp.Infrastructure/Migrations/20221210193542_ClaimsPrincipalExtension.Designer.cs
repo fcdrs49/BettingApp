@@ -4,6 +4,7 @@ using BettingApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BettingApp.Infrastructure.Migrations
 {
     [DbContext(typeof(BettingAppDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221210193542_ClaimsPrincipalExtension")]
+    partial class ClaimsPrincipalExtension
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1227,7 +1229,7 @@ namespace BettingApp.Infrastructure.Migrations
                         new
                         {
                             ISOCode = "BGN",
-                            DateTime = new DateTime(2022, 12, 10, 20, 33, 50, 223, DateTimeKind.Utc).AddTicks(8240),
+                            DateTime = new DateTime(2022, 12, 10, 19, 35, 37, 645, DateTimeKind.Utc).AddTicks(3976),
                             Description = "Български лев",
                             ExchangeRate = 1m,
                             ShortDescription = "лв."
@@ -1235,7 +1237,7 @@ namespace BettingApp.Infrastructure.Migrations
                         new
                         {
                             ISOCode = "EUR",
-                            DateTime = new DateTime(2022, 12, 10, 20, 33, 50, 223, DateTimeKind.Utc).AddTicks(8244),
+                            DateTime = new DateTime(2022, 12, 10, 19, 35, 37, 645, DateTimeKind.Utc).AddTicks(3983),
                             Description = "Евро",
                             ExchangeRate = 1.95583m,
                             ShortDescription = "€"
@@ -1243,7 +1245,7 @@ namespace BettingApp.Infrastructure.Migrations
                         new
                         {
                             ISOCode = "USD",
-                            DateTime = new DateTime(2022, 12, 10, 20, 33, 50, 223, DateTimeKind.Utc).AddTicks(8248),
+                            DateTime = new DateTime(2022, 12, 10, 19, 35, 37, 645, DateTimeKind.Utc).AddTicks(3987),
                             Description = "Щатски долар",
                             ExchangeRate = 1.8780137m,
                             ShortDescription = "$"
@@ -40547,7 +40549,6 @@ namespace BettingApp.Infrastructure.Migrations
             modelBuilder.Entity("BettingApp.Infrastructure.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -40567,10 +40568,12 @@ namespace BettingApp.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -40614,13 +40617,13 @@ namespace BettingApp.Infrastructure.Migrations
                             Id = "ed4684b3-22a8-42d5-8fb4-b9a31a93b288",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "1a830e83-981c-4a9d-aad7-7d4e3dcb0a51",
+                            ConcurrencyStamp = "0a83390c-e905-40cd-8321-a0e661c7b587",
                             Email = "admin@bettingapp.bg",
                             EmailConfirmed = false,
                             FirstName = "admin",
                             LastName = "admin",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEM9RIEtmHyLyBe/7iy083icAXOU1r/shYa/vTT+jwXR9Lx61NM2w6OsOEirn5AZA6g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJjqx47wJzWgU3oPM19VuEJuEI4Cxer54eAHdcE+O17kidOQ1PQXQsmAqBDe3uaF8g==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -40630,13 +40633,13 @@ namespace BettingApp.Infrastructure.Migrations
                             Id = "63013373-f53e-4ddc-8f4d-3058ef0c115a",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "3c5d0264-16ab-4ab5-a47d-ece2e41686ce",
+                            ConcurrencyStamp = "c816474e-fac4-4a54-9666-57cebf995a4c",
                             Email = "user1@bettingapp.bg",
                             EmailConfirmed = false,
                             FirstName = "Ivan",
                             LastName = "Ivanov",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEL8Sr4Zb3WVRpN8+nV7WsEsjKVxN1s2uHlyFKzC1FwgorjyObqTmsrQsRfD05M6AXQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG9DD5mf5/1QrWK5D+1iG7Xavo9qDrKcyG4Fwe+cLvznlSSXHAe8rEHP9iMlfp9rOw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "user1"
@@ -40646,13 +40649,13 @@ namespace BettingApp.Infrastructure.Migrations
                             Id = "0ca4366c-f7a0-437d-8d93-c4c2c2c5b7d5",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "24b75ca9-d2a0-48ee-8396-b899ed8f2e1b",
+                            ConcurrencyStamp = "abe5621d-72ff-4c5e-bd82-2a9057848de0",
                             Email = "user2@bettingapp.bg",
                             EmailConfirmed = false,
                             FirstName = "Petar",
                             LastName = "Petrov",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEGyVG/ok8TjMkbj90FCf2DFZ7HCDS35TghItzausMOhaFE1H6eyX80j0YZt/yeRCOw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECNkbcF6MsDfu6zdccUt8OvLTDcbn+uev28Rwx024BR/lk0xhJoNSGxvFgq7NG8m/w==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "user2"

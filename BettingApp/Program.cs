@@ -17,10 +17,11 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.Password.RequireUppercase = false;
     options.User.RequireUniqueEmail = true;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BettingAppDbContext>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices();  
 
 builder.Services.AddDistributedMemoryCache();
 

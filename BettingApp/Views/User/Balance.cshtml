@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Balance";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <input id="bets" type="button" value="Bets"/>
+    </div>
+    <div class="col-md-4">
+        <input id="transactions" type="button" value="Transactions" />
+    </div>
+    <div class="col-md-4">
+        <input id="deposit" type="button" value="Deposit" />
+    </div>
+    <div class="col-md-4">
+        <input id="withdraw" type="button" value="Withdraw" />
+    </div>
+</div>
+<div class="container"></div>
+
+<script>
+    $(function() {
+        $(".RemoveBet").click(function () {
+            $.ajax({
+                type: "DELETE",
+                url: "/GameBet/Remove",
+                data: { gameId: this.id },
+                dataType: "html",
+                success: function (response) {
+                    $('#betGrid').html(response);
+                    $('#betsTable').removeAttr("hidden");
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        })
+    })
+</script>
