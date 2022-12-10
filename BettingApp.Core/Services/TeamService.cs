@@ -92,9 +92,37 @@ namespace BettingApp.Core.Services
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    ImageUrl = t.ImageUrl
+                    ImageUrl = t.ImageUrl,
+                    Country = t.Country.Name
                 })
                 .ToListAsync();
+        }
+
+        public async Task AddAsync(TeamFormModel model)
+        {
+            var team = new Team()
+            {
+                CountryId = model.CountryId,
+                Id = model.Id,
+                ImageUrl = model.ImageUrl,
+                IsInternational = model.IsInternational,
+                Name = model.Name
+            };
+
+            await repo.AddAsync(team);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            if(await repo.AllReadonly<Game>()
+                .AnyAsync(g => g.HomeTeamId == id || g.AwayTeamId == id))
+            {
+                throw new InvalidOperationException("Cannot delete team when it participates in games!");
+            }
+
+            await repo.DeleteAsync<Team>(id);
+            await repo.SaveChangesAsync();
         }
     }
 }

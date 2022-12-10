@@ -43,7 +43,7 @@ namespace BettingApp.Core.Models.Employee
             = new List<TeamViewModel>();
 
         [Display(Name = "Image URL")]
-        [StringLength(ImageUrlMaxLength, MinimumLength = ImageUrlMaxLength)]
+        [StringLength(ImageUrlMaxLength, MinimumLength = ImageUrlMinLength)]
         public string? ImageUrl { get; set; }
     }
 }

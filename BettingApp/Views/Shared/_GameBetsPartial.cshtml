@@ -1,0 +1,23 @@
+﻿<div id="betGrid" style="left: 30%; bottom: 0; position:fixed; width: 40%">
+    
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            type: "GET",
+            url: "/GameBet/GetAll",
+            dataType: "html",
+            success: function(response) {
+                $('#betGrid').html(response);
+            },
+            failure: function(response) {
+                alert(response.responseText);
+            },
+            error: function(response) {
+                alert(response.responseText);
+            }
+        })
+    })    
+</script>

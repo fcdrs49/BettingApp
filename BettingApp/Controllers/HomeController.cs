@@ -1,7 +1,9 @@
 ﻿using BettingApp.Core.Contracts;
+using BettingApp.Core.Models.GameBet;
 using BettingApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace BettingApp.Controllers
 {
@@ -18,6 +20,21 @@ namespace BettingApp.Controllers
         {   
             var model = await gameService.NextTenGames();
 
+            HttpContext.Session.Remove("GameBets");
+            List<GameBetViewModel> gameBets = new List<GameBetViewModel>();
+            foreach (var game in model)
+            {
+                gameBets.Add(new GameBetViewModel()
+                {
+                    GameId = game.Id,
+                    HomeTeam = game.HomeTeam.Name,
+                    AwayTeam = game.AwayTeam.Name,
+                    BetRate = game.HomeRate,
+                    Prediction = "1"
+                });
+            }
+            HttpContext.Session.SetString("GameBets", JsonSerializer.Serialize(gameBets));
+
             return View(model);
         }
 
@@ -26,5 +43,6 @@ namespace BettingApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

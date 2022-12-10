@@ -12,12 +12,48 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly ICompetitionService competitionService;
+        private readonly ITeamService teamService;
 
-        public GameService(IRepository _repo, ICompetitionService _competitionService)
+        public GameService(IRepository _repo, ICompetitionService _competitionService, ITeamService _teamService)
         {
             repo = _repo;
             competitionService = _competitionService;
+            teamService = _teamService;
         }
+
+        public async Task<GameViewModel> ViewByIdAsync(int id)
+        {
+            return await repo.AllReadonly<Game>()
+                .Where(g => g.Id == id)
+                .Select(g => new GameViewModel()
+                {
+                    Id = g.Id,
+                    HomeTeam = new TeamViewModel()
+                    {
+                        Id = g.HomeTeam.Id,
+                        Name = g.HomeTeam.Name,
+                        ImageUrl = g.HomeTeam.ImageUrl
+                    },
+                    AwayTeam = new TeamViewModel()
+                    {
+                        Id = g.AwayTeam.Id,
+                        Name = g.AwayTeam.Name,
+                        ImageUrl = g.AwayTeam.ImageUrl
+                    },
+                    HomeRate = g.HomeRate,
+                    DrawRate = g.DrawRate,
+                    AwayRate = g.AwayRate,
+                    Competition = new CompetitionViewModel()
+                    {
+                        Id = g.Competition.Id,
+                        Name = g.Competition.Name,
+                        ImageUrl = g.Competition.ImageUrl
+                    },
+                    Date = g.DateTime
+                })
+                .FirstAsync();
+        }
+
         public async Task<IEnumerable<GameViewModel>> NextTenGames()
         {
             return await repo.AllReadonly<Game>()
@@ -47,10 +83,178 @@ namespace BettingApp.Core.Services
                         Name = g.Competition.Name,
                         ImageUrl = g.Competition.ImageUrl
                     },
-                    Date = g.DateTime.ToString("dd/MM/yyyy HH:mm")
+                    Date = g.DateTime
                 })
                 .Take(10)
                 .ToListAsync();
+        }
+
+        public async Task<GameFormModel> FormByIdAsync(int id)
+        {
+            var teams = await teamService.GetAllAsync();
+            var competitions = await competitionService.GetAllAsync();
+
+            var game = await repo.AllReadonly<Game>()
+                .Where(g => g.Id == id)
+                .Select(g => new GameFormModel()
+                {
+                    Id = g.Id,
+                    HomeTeamId = g.HomeTeamId,
+                    AwayTeamId = g.AwayTeamId,
+                    HomeRate = g.HomeRate,
+                    DrawRate = g.DrawRate,
+                    AwayRate = g.AwayRate,
+                    CompetitionId = g.CompetitionId,
+                    DateTime = g.DateTime,
+                    AwayTeamGoals = g.AwayTeamGoals,
+                    HomeTeamGoals = g.HomeTeamGoals,
+                    Finished = g.Finished
+                })
+                .FirstAsync();
+            game.Competitions = competitions;
+            game.Teams = teams;
+
+            return game;
+            
+        }
+
+        public async Task<IEnumerable<GameListModel>> GetAllAsync()
+        {
+            return await repo.AllReadonly<Game>()
+                .Select(g => new GameListModel()
+                {
+                    Id = g.Id,
+                    Competition = g.Competition.Name,
+                    HomeTeam = g.HomeTeam.Name,
+                    AwayTeam = g.AwayTeam.Name,
+                    HomeRate = g.HomeRate,
+                    DrawRate = g.DrawRate,
+                    AwayRate = g.AwayRate,
+                    Date = g.DateTime
+                })
+                .ToListAsync();
+        }
+
+        public async Task EditAsync(GameFormModel model)
+        {
+            var game = await repo.GetByIdAsync<Game>(model.Id);
+
+            game.AwayRate = model.AwayRate;
+            game.AwayTeamId = model.AwayTeamId;
+            game.AwayTeamGoals = model.AwayTeamGoals;
+            game.CompetitionId = model.CompetitionId;
+            game.DateTime = model.DateTime;
+            game.DrawRate = model.DrawRate;
+            game.Finished = model.Finished;
+            game.HomeRate = model.HomeRate;
+            game.HomeTeamGoals = model.HomeTeamGoals;
+            game.HomeTeamId = model.HomeTeamId;
+            game.Sign = model.ScoreSign;
+
+            repo.Update(game);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task CreateAsync(GameFormModel model)
+        {
+            var game = new Game()
+            {
+                AwayRate = model.AwayRate,
+                AwayTeamId = model.AwayTeamId,
+                AwayTeamGoals = model.AwayTeamGoals,
+                CompetitionId = model.CompetitionId,
+                DateTime = model.DateTime,
+                DrawRate = model.DrawRate,
+                Finished = model.Finished,
+                HomeRate = model.HomeRate,
+                HomeTeamGoals = model.HomeTeamGoals,
+                HomeTeamId = model.HomeTeamId,
+                Sign = model.ScoreSign
+            };
+
+            await repo.AddAsync(game);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            if(await repo.AllReadonly<GameBet>()
+                .Where(gb => gb.GameId == id)
+                .AnyAsync())
+            {
+                throw new InvalidOperationException("There are bets for this game!");
+            }
+
+            await repo.DeleteAsync<Game>(id);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task<GameQueryServiceModel> All(string team = null, string competition = null, int currentPage = 1, int gamesPerPage = 20, bool upcoming = false, bool results = false)
+        {
+            var result = new GameQueryServiceModel();
+            var games = repo.AllReadonly<Game>();
+            if (upcoming)
+            {
+                games = games
+                    .Where(g => g.DateTime >= DateTime.Now);
+            }
+
+            if(results)
+            {
+                games = games
+                    .Where(g => g.DateTime < DateTime.Now);
+            }
+
+            if(!string.IsNullOrEmpty(team))
+            {
+                var teamTerm = $"%{team.ToLower()}%";
+                games = games
+                    .Where(g => EF.Functions.Like(g.HomeTeam.Name.ToLower(),teamTerm) ||
+                        EF.Functions.Like(g.AwayTeam.Name.ToLower(),teamTerm));
+            }
+
+            if(!string.IsNullOrEmpty(competition))
+            {
+                games = games
+                    .Where(g => g.Competition.Name == competition);
+            }
+
+            result.Games = await games
+                .Skip((currentPage - 1) * gamesPerPage)
+                .Take(gamesPerPage)
+                .Select(g => new GameViewModel()
+                {
+                    Id = g.Id,
+                    HomeTeam = new TeamViewModel()
+                    {
+                        Id = g.HomeTeamId,
+                        Name = g.HomeTeam.Name,
+                        ImageUrl = g.HomeTeam.ImageUrl,
+                        Country = g.HomeTeam.Country.Name
+                    },
+                    AwayTeam = new TeamViewModel()
+                    {
+                        Id = g.AwayTeamId,
+                        Name = g.AwayTeam.Name,
+                        ImageUrl = g.AwayTeam.ImageUrl,
+                        Country = g.AwayTeam.Country.Name
+                    },
+                    Competition = new CompetitionViewModel()
+                    {
+                        Id = g.Competition.Id,
+                        ImageUrl = g.Competition.ImageUrl,
+                        Name = g.Competition.Name
+                    },
+                    Date = g.DateTime,
+                    HomeRate = g.HomeRate,
+                    DrawRate = g.DrawRate,
+                    AwayRate = g.AwayRate
+                })
+                .ToListAsync();
+
+            result.GamesCount = await games.CountAsync();
+
+            return result;
         }
     }
 }

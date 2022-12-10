@@ -16,7 +16,7 @@ namespace BettingApp.Core.Models.Game
         public int HomeTeamId { get; set; }
 
         [Required]
-        public int AwayTeamid { get; set; }
+        public int AwayTeamId { get; set; }
 
         [Required]
         [Display(Name = "Home Rate")]
@@ -40,10 +40,12 @@ namespace BettingApp.Core.Models.Game
         [Display(Name = "Sign")]
         public ScoreSign ScoreSign { get; set; }
 
-        public List<CompetitionViewModel> Competitions { get; set; }
+        public bool Finished { get; set; }
+
+        public IEnumerable<CompetitionViewModel> Competitions { get; set; }
             = new List<CompetitionViewModel>();
 
-        public List<TeamViewModel> Teams { get; set; }
+        public IEnumerable<TeamViewModel> Teams { get; set; }
             = new List<TeamViewModel>();
 
     }

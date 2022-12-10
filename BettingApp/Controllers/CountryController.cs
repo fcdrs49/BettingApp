@@ -13,11 +13,6 @@ namespace BettingApp.Controllers
             countryService = _countryService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> All()
-        {
-            return View(await countryService.GetAllAsync());
-        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -36,7 +31,7 @@ namespace BettingApp.Controllers
             }
             await countryService.EditAsync(model);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("Countries", "Admin");
         }
 
         [HttpGet]
@@ -55,7 +50,14 @@ namespace BettingApp.Controllers
 
             await countryService.CreateAsync(model);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("Countries", "Admin");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await countryService.DeleteByIdAsync(id);
+            return RedirectToAction("Countries", "Admin");
         }
     }
 }

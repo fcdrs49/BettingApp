@@ -10,7 +10,7 @@ namespace BettingApp.Core.Models.Transaction
         public string User { get; set; } = null!;
 
         [Display(Name = "Transaction Type")]
-        public TransactionType TransactionType { get; set; }
+        public string TransactionType { get; set; } = null!;
 
         public decimal Amount { get; set; }
 

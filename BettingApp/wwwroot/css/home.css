@@ -235,6 +235,32 @@ body {
 	box-shadow: 0 4px 8px 0 rgba(#303030, 0.25);
 }
 
+.match-edit {
+	position: absolute;
+	bottom: -16px;
+	left: 20%;
+	transform: translateX(-50%);
+	border: none;
+	background-color: var(--color-theme-primary);
+	border-radius: 6px;
+	padding: 10px 48px;
+	color: rgba(#fff, 0.9);
+	font-size: 14px;
+	box-shadow: 0 4px 8px 0 rgba(#303030, 0.25);
+}
+.match-delete {
+	position: absolute;
+	bottom: -16px;
+	left: 80%;
+	transform: translateX(-50%);
+	border: none;
+	background-color: var(--color-theme-primary);
+	border-radius: 6px;
+	padding: 10px 48px;
+	color: rgba(#fff, 0.9);
+	font-size: 14px;
+	box-shadow: 0 4px 8px 0 rgba(#303030, 0.25);
+}
 
 .container {
 	position: center;

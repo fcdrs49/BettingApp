@@ -20,11 +20,6 @@ namespace BettingApp.Controllers
             teamService = _teamService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> All()
-        {
-            return View(await employeeService.GetAllAsync());
-        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -45,7 +40,7 @@ namespace BettingApp.Controllers
             }
             await employeeService.EditAsync(model);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("Employees", "Admin");
         }
 
         [HttpGet]
@@ -69,7 +64,14 @@ namespace BettingApp.Controllers
 
             await employeeService.CreateAsync(model);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("Employees", "Admin");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await employeeService.DeleteAsync(id);
+            return RedirectToAction("Employees", "Admin");
         }
     }
 }

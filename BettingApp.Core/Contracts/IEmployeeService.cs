@@ -9,5 +9,6 @@ namespace BettingApp.Core.Contracts
         public Task EditAsync(EmployeeFormModel model);
         public Task<IEnumerable<EmployeeViewModel>> GetAllAsync();
         public Task CreateAsync(EmployeeFormModel model);
+        public Task DeleteAsync(int id);
     }
 }

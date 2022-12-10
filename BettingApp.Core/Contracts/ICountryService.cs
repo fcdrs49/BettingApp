@@ -9,5 +9,6 @@ namespace BettingApp.Core.Contracts
         public Task<CountryModel> GetByIdAsync(int id);
         public Task EditAsync(CountryModel model);
         public Task CreateAsync(CountryModel model);
+        public Task DeleteByIdAsync(int id);
     }
 }

@@ -3,13 +3,22 @@
 <div class="row text-center">
     <div class="card">
         <div class="column">
-            <img src="@Model.ImageUrl" />
+            @if (Model.ImageUrl != null)
+            {
+                <img src="@Model.ImageUrl" />
+            }
         </div>
         <div class="column">
             <h2>@Model.FirstName @Model.LastName</h2>
         </div>
         <div class="column">
-            <p><img src="@Model.CountryImageUrl" />@Model.Country</p>
+            <p>
+                @if (Model.CountryImageUrl != null)
+                {
+                    <img src="@Model.CountryImageUrl" />
+                }
+                @Model.Country
+            </p>
         </div>
     </div>
 </div>

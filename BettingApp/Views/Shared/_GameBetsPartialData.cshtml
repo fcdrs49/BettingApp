@@ -1,0 +1,71 @@
+﻿@model IEnumerable<GameBetViewModel>
+
+@if (Model.Count() > 0)
+{
+    <div>
+        <input id="betsCount" class="text-center" type="button" onclick="showBets()" value="Bets: @Model.Count()">
+    </div>
+    <div id="betsTable" style="background-color:#f7f5ff" ; width: 50%; margin: 0 auto; display: block; text-align: center" hidden="hidden">
+        <div style="color:black; right: 30%; position:fixed">
+            <input type="button" onclick="hideBets()" value="X">
+        </div>
+        <table class="text-center" width="90%">
+            <tr class="text-center">
+                <th class="text-center">Home</th>
+                <th class="text-center">Away</th>
+                <th class="text-center">Bet Rate</th>
+                <th class="text-center">Prediction</th>
+            </tr>
+            @foreach (var gameBet in Model)
+            {
+                <tr>
+                    <td class="text-center">
+                        @gameBet.HomeTeam
+                    </td>
+                    <td class="text-center">
+                        @gameBet.AwayTeam
+                    </td>
+                    <td class="text-center">
+                        @gameBet.BetRate
+                    </td>
+                    <td class="text-center">
+                        @gameBet.Prediction
+                    </td>
+                    <td>
+                        <input id="@gameBet.GameId" class="RemoveBet" type="button" value="Remove">
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    function showBets() {
+        $("#betsTable").removeAttr("hidden");
+    }      
+    function hideBets() {
+        $("#betsTable").attr("hidden", "hidden");
+    }
+    $(function() {
+        $(".RemoveBet").click(function() {
+            $.ajax({
+                type: "DELETE",
+                url: "/GameBet/Remove",
+                data: { gameId: this.id },
+                dataType: "html",
+                success: function (response) {
+                    $('#betGrid').html(response);
+                    $('#betsTable').removeAttr("hidden");
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            })
+        })
+    })
+</script>

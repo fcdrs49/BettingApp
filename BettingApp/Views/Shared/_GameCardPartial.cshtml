@@ -1,0 +1,74 @@
+﻿@model GameViewModel
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+	<div class="container">
+		<div class="match">
+			<div class="match-header">
+				<div class="match-status">Upcoming</div>
+				<div class="match-tournament">
+					@if (Model.Competition.ImageUrl != null)
+					{
+						<img src="@Model.Competition.ImageUrl" />
+					}
+				@Model.Competition.Name
+				</div>
+				<div class="match-actions">
+				
+				</div>
+			</div>
+			<div class="match-content">
+				<div class="column">
+					<a asp-action="Details" asp-controller="Team" asp-route-id="@Model.HomeTeam.Id">
+						<div class="team team--home">
+							<div class="team-logo">
+								@if(Model.HomeTeam.ImageUrl != null)
+								{
+									<img src="@Model.HomeTeam.ImageUrl" />
+								}
+							</div>
+							<h2 class="team-name">@Model.HomeTeam.Name</h2>
+						</div>
+					</a>
+					
+					<button class="match-edit">
+					<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game">
+						Edit
+					</a>
+					</button>
+				</div>
+				<div class="column">
+					<div class="match-details">
+						<div class="match-date">
+							@Model.Date
+						</div>
+						<div class="match-bet-options">
+							<button class="match-bet-option">@Model.HomeRate</button>
+							<button class="match-bet-option">@Model.DrawRate</button>
+							<button class="match-bet-option">@Model.AwayRate</button>
+						</div>
+						@if (User.Identity != null && User.Identity.IsAuthenticated)
+						{
+							<button class="match-bet-place">Place Bet</button>
+						}
+					</div>
+				</div>
+				<div class="column">
+					<a asp-action="Details" asp-controller="Team" asp-route-id="@Model.AwayTeam.Id">
+						<div class="team team--away">
+							<div class="team-logo">
+								@if (Model.AwayTeam.ImageUrl != null)
+								{
+									<img src="@Model.AwayTeam.ImageUrl" />
+								}
+						</div>
+							<h2 class="team-name"> @Model.AwayTeam.Name</h2>
+						</div>
+					</a>
+					<button class="match-delete">
+						<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game">
+							Delete
+						</a>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>

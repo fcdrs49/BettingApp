@@ -54,8 +54,6 @@ namespace BettingApp.Infrastructure.Data
 
         public DbSet<GameBet> GameBets { get; set; }
 
-        public DbSet<Season> Seasons { get; set; }
-
         public DbSet<Team> Teams { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }

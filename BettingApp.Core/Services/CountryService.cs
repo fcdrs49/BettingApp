@@ -45,7 +45,8 @@ namespace BettingApp.Core.Services
                 .Select(c => new CountryModel()
                 {
                     Id = c.Id,
-                    Name = c.Name
+                    Name = c.Name,
+                    ImageUrl = c.ImageUrl
                 })
                 .ToListAsync();
         }
@@ -53,6 +54,7 @@ namespace BettingApp.Core.Services
         public async Task<CountryModel> GetByIdAsync(int id)
         {
             return await repo.AllReadonly<Country>()
+                .Where(c => c.Id == id)
                 .Select(c => new CountryModel()
                 {
                     Id = c.Id,
@@ -60,6 +62,33 @@ namespace BettingApp.Core.Services
                     ImageUrl = c.ImageUrl
                 })
                 .FirstAsync();
+        }
+
+        public async Task DeleteByIdAsync(int id)
+        {
+            if(await repo.AllReadonly<Competition>()
+                .Where(c => c.CountryId == id)
+                .AnyAsync())
+            {
+                throw new InvalidOperationException("Competitions for this country exist!");
+            }
+
+            if(await repo.AllReadonly<Employee>()
+                .Where(e => e.CountryId == id)
+                .AnyAsync())
+            {
+                throw new InvalidOperationException("Employees for this country exist!");
+            }
+
+            if(await repo.AllReadonly<Team>()
+                .Where(t => t.CountryId == id)
+                .AnyAsync())
+            {
+                throw new InvalidOperationException("Teams for this country exist!");
+            }
+
+            await repo.DeleteAsync<Country>(id);
+            await repo.SaveChangesAsync();
         }
     }
 }

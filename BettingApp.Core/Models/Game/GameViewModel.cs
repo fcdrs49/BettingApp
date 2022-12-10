@@ -20,6 +20,6 @@ namespace BettingApp.Core.Models.Game
 
         public decimal AwayRate { get; set; }
 
-        public string Date { get; set; } = null!;
+        public DateTime Date { get; set; }
     }
 }

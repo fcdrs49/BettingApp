@@ -1,4 +1,4 @@
-﻿@model BettingApp.Infrastructure.Data.Models.Currency
+﻿@model CurrencyModel
 
 @{
     ViewData["Title"] = "Add";
@@ -33,12 +33,7 @@
                 <span asp-validation-for="ExchangeRate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateTime" class="control-label"></label>
-                <input asp-for="DateTime" class="form-control" />
-                <span asp-validation-for="DateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Add" class="btn btn-primary" />
             </div>
         </form>
     </div>

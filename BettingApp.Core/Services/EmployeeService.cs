@@ -27,7 +27,8 @@ namespace BettingApp.Core.Services
                     BirthDate = e.BirthDate,
                     ImageUrl = e.ImageUrl,
                     CountryId = e.CountryId,
-                    TeamId = e.TeamId
+                    TeamId = e.TeamId,
+                    EmployeeType = e.EmployeeType
                 })
                 .FirstOrDefaultAsync();
 
@@ -44,6 +45,7 @@ namespace BettingApp.Core.Services
             employee.CountryId = model.CountryId;
             employee.TeamId = model.TeamId;
             employee.ImageUrl = model.ImageUrl;
+            employee.EmployeeType = model.EmployeeType;
 
             repo.Update(employee);
             await repo.SaveChangesAsync();
@@ -92,10 +94,16 @@ namespace BettingApp.Core.Services
                 CountryId = model.CountryId,
                 EmployeeType = model.EmployeeType,
                 ImageUrl = model.ImageUrl,
-                TeamId = model.TeamId
+                TeamId = model.TeamId,
             };
 
             await repo.AddAsync(employee);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await repo.DeleteAsync<Employee>(id);
             await repo.SaveChangesAsync();
         }
     }

@@ -26,11 +26,6 @@ namespace BettingApp.Infrastructure.Data.Models
         [StringLength(ImageUrlMaxLength)]
         public string? ImageUrl { get; set; }
 
-        [Required]
-        public int SeasonId { get; set; }
-        [ForeignKey(nameof(SeasonId))]
-        public Season Season { get; set; } = null!;
-
         public IEnumerable<Game> Games { get; set; }
             = new List<Game>();
     }
