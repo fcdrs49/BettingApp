@@ -1,0 +1,41 @@
+﻿@model WithdrawFormModel
+
+@{
+    ViewData["Title"] = "Withdraw";
+}
+
+@if(Model.CreditCards.Count() == 0)
+{
+    <h1>No credit cards found!</h1>
+}
+else
+{
+<h1 class="text-center">Withdraw</h1>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Withdraw">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CreditCard" class="control-label">@Html.DisplayNameFor(model => model.CreditCard)</label>
+                        <select asp-for="CreditCard" class="form-control">
+                            @foreach (var card in Model.CreditCards)
+                            {
+                                <option value="@card">@card</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CreditCard" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Withdraw" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

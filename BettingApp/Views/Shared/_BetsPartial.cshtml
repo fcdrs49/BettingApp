@@ -1,101 +1,110 @@
 ﻿@model IEnumerable<BetViewModel>
 @if(Model.Count() == 0)
 {
-    <h1>No bets found!</h1>
+    <h1 class="text-center">No bets found!</h1>
 }
 else
 {
-    <div class="container">
-        <div class="row">
-            <div class="col-md-7">
-                @Html.DisplayNameFor(model => model.DateTime)
-            </div>
-            <div class="col-md-7">
-                Number of games
-            </div>
-            <div class="col-md-7">
-                Bet Rate
-            </div>
-            <div class="col-md-7">
-                @Html.DisplayNameFor(model => model.Amount)
-            </div>
-            <div class="col-md-7">
-                @Html.DisplayNameFor(model => model.CurrencyCode)
-            </div>
-            <div class="col-md-7">
-                @Html.DisplayNameFor(model => model.Closed)
-            </div>
-            <div class="col-md-7">
-                @Html.DisplayNameFor(model => model.WinAmount)
+    <div class="container text-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.DateTime)
+                    </th>
+                    <th scope="col">
+                        Number of games
+                    </th>
+                    <th scope="col">
+                        Bet Rate
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.CurrencyCode)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Closed)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.WinAmount)
+                    </th>
+                    <th scope="col">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var bet in Model)
+                {
+                    <tr>
+                        <td>
+                            @bet.DateTime
+                        </td>
+                        <td>
+                            @bet.GamesCount
+                        </td>
+                        <td>
+                            @bet.BetRate
+                        </td>
+                        <td>
+                            @bet.Amount
+                        </td>
+                        <td>
+                            @bet.CurrencyCode
+                        </td>
+                        <td>
+                            @bet.Closed
+                        </td>
+                        <td>
+                            @bet.WinAmount
+                        </td>
+                        <td>
+                            <a id="@bet.Id" class="Details" href="javascript:;">Details</a>
+                        </td>
+                    </tr>
+                }
+        </table>
+        <div id="partialModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Bet Details</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
-        @foreach(var bet in Model)
-        {
-            <div class="row game">
-                <div class="col-md-6">
-                    @bet.DateTime
-                </div>
-                <div class="col">
-                    @bet.GameBets.Count() Games
-                </div>
-                <div class="col">
-                    @bet.GameBets.Select(gb => gb.BetRate).Aggregate((a,b) => a * b)
-                </div>
-                <div class="col-md-6">
-                    @bet.Amount
-                </div>
-                <div class="col-md-6">
-                    @bet.CurrencyCode
-                </div>
-                <div class="col-md-6">
-                    @bet.Closed
-                </div>
-                <div class="col-md-6">
-                    @bet.WinAmount
-                </div>
-                <div class="container gamebet" hidden="hidden">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Home Team
-                        </div>
-                        <div class="col-md-4">
-                            Away Team
-                        </div>
-                        <div class="col-md-4">
-                            Prediction
-                        </div>
-                        <div class="col-md-4">
-                            Bet Rate
-                        </div>
-                    </div>
-                    @foreach (var gameBet in bet.GameBets)
-                        {
-                            <div class="row">
-                                <div class="col-md-4">
-                                    @gameBet.HomeTeam
-                                </div>
-                                <div class="col-md-4">
-                                    @gameBet.AwayTeam
-                                </div>
-                                <div class="col-md-4">
-                                    @gameBet.Prediction
-                                </div>
-                                <div class="col-md-4">
-                                    @gameBet.BetRate
-                                </div>
-                            </div>
-                        }
-                </div>
-            </div>
-        }
     </div>
 }
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript">
     $(function() {
-        $(".game").click(function() {
-            $(this).children(".gamebet").toggle("slow")
-        }
+        $(".Details").click(function() {
+            $.ajax({
+                type: "GET",
+                url: "/Bet/GetBetDetails",
+                data: `{ betId: ${this.id} }`,
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $("#partialModal").find(".modal-body").html(response);
+                    $("#partialModal").modal('show');
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        })
     })
 </script>

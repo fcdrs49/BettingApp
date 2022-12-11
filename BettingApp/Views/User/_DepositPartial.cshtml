@@ -1,0 +1,67 @@
+﻿@model DepositFormModel
+
+@{
+    ViewData["Title"] = "Deposit";
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<h1 class="text-center">Deposit</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-3">
+            <form asp-action="Deposit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CardNumber" class="control-label"></label>
+                    <input asp-for="CardNumber" class="form-control" />
+                    <span asp-validation-for="CardNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CVC" class="control-label"></label>
+                    <input asp-for="CVC" class="form-control" />
+                    <span asp-validation-for="CVC" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="col">
+                        <label asp-for="ExpirationMonth" class="control-label"></label>
+                        <input asp-for="ExpirationMonth" class="form-control" />
+                        <span asp-validation-for="ExpirationMonth" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="ExpirationYear" class="control-label"></label>
+                        <input asp-for="ExpirationYear" class="form-control" />
+                        <span asp-validation-for="ExpirationYear" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label"></label>
+                    <input asp-for="Amount" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CurrencyCode" class="control-label">Currency</label>
+                    <select asp-for="CurrencyCode" class="form-control">
+                        @foreach (var currency in Model.Currencies)
+                        {
+                            <option value="@currency">@currency</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CurrencyCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Deposit" class="btn btn-primary text-center" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

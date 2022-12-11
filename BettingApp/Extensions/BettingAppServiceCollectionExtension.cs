@@ -17,6 +17,7 @@ public static class BettingAppServiceCollectionExtension
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IBetService, BetService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }

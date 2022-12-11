@@ -1,55 +1,80 @@
-﻿@model IEnumerable<GameBetViewModel>
+﻿@model BetQueryModel
 
-@if (Model.Count() > 0)
+@if (Model.GameBets.Count() > 0)
 {
     <div>
-        <input id="betsCount" class="text-center" type="button" onclick="showBets()" value="Bets: @Model.Count()">
+        <input id="betsCount" class="btn btn-primary" type="submit" onclick="showBets()" value="Bets: @Model.GameBets.Count()" style="width:100%">
     </div>
-    <div id="betsTable" style="background-color:#f7f5ff" ; width: 50%; margin: 0 auto; display: block; text-align: center" hidden="hidden">
-        <div style="color:black; right: 30%; position:fixed">
-            <input type="button" onclick="hideBets()" value="X">
+
+        <div id="betsTable" style="background-color:#f7f5ff" ; width: 50%; margin: 0 auto; display: block; text-align: center" hidden="hidden">
+            <div style="color:black; right: 30%; position:fixed">
+                <input type="submit" class="btn btn-primary" onclick="hideBets()" value="X">
+            </div>
+            <table class="table" width="90%">
+                <thead>
+                    <tr>
+                        <th scope="col">Home</th>
+                        <th scope="col">Away</th>
+                        <th scope="col">Bet Rate</th>
+                        <th scope="col">Prediction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var gameBet in Model.GameBets)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @gameBet.HomeTeam
+                            </td>
+                            <td class="text-center">
+                                @gameBet.AwayTeam
+                            </td>
+                            <td class="text-center">
+                                @gameBet.BetRate
+                            </td>
+                            <td class="text-center">
+                                @gameBet.Prediction
+                            </td>
+                            <td>
+                                <input id="@gameBet.GameId" class="RemoveBet" type="button" value="Remove">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        Total Bet Rate: 
+                    </div>
+                    <div class="col-sm">
+                        @Model.GameBets.Select(gb => gb.BetRate).Aggregate((a,b) => a*b).ToString("0.00")
+                    </div>
+                </div>
+                
+                 <form asp-controller="Bet" asp-action="PlaceBet">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label asp-for="Amount"></label>
+                        </div>
+                        <div class="col-sm">
+                            <input asp-for="Amount" class="form-control">
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" class="match-bet-place" value="Place Bet" />
+                    </div>
+                </form>
+            </div>
         </div>
-        <table class="text-center" width="90%">
-            <tr class="text-center">
-                <th class="text-center">Home</th>
-                <th class="text-center">Away</th>
-                <th class="text-center">Bet Rate</th>
-                <th class="text-center">Prediction</th>
-            </tr>
-            @foreach (var gameBet in Model)
-            {
-                <tr>
-                    <td class="text-center">
-                        @gameBet.HomeTeam
-                    </td>
-                    <td class="text-center">
-                        @gameBet.AwayTeam
-                    </td>
-                    <td class="text-center">
-                        @gameBet.BetRate
-                    </td>
-                    <td class="text-center">
-                        @gameBet.Prediction
-                    </td>
-                    <td>
-                        <input id="@gameBet.GameId" class="RemoveBet" type="button" value="Remove">
-                    </td>
-                </tr>
-            }
-        </table>
-    </div>
 }
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <script type="text/javascript">
-    function showBets() {
-        $("#betsTable").removeAttr("hidden");
-    }      
-    function hideBets() {
-        $("#betsTable").attr("hidden", "hidden");
-    }
     $(function() {
-        $(".RemoveBet").click(function() {
+        $(".RemoveBet").click(function () {
+            removeMarker(this.id);
             $.ajax({
                 type: "DELETE",
                 url: "/GameBet/Remove",
@@ -67,5 +92,5 @@
                 }
             })
         })
-    })
+    });
 </script>

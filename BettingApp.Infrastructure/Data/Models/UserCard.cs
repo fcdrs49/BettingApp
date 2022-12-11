@@ -14,7 +14,9 @@ namespace BettingApp.Infrastructure.Data.Models
         public string CardNumber { get; set; } = null!;
 
         [Required]
-        [StringLength(ExpirationMaxLength)]
-        public string Expiration { get; set; } = null!;
+        public int ExpirationMonth { get; set; }
+
+        [Required]
+        public int ExpirationYear { get; set; }
     }
 }

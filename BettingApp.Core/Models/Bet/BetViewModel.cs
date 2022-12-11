@@ -16,7 +16,8 @@ namespace BettingApp.Core.Models.Bet
 
         public DateTime DateTime { get; set; }
 
-        public IEnumerable<GameBetViewModel> GameBets { get; set; }
-            = new List<GameBetViewModel>();
+        public decimal BetRate { get; set; }
+
+        public int GamesCount { get; set; }
     }
 }

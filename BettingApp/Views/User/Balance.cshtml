@@ -3,40 +3,61 @@
 }
 
 <div class="row">
-    <div class="col-md-4">
-        <input id="bets" type="button" value="Bets"/>
+    <div class="col-md-3">
+        <input id="bets" type="submit" class="btn btn-primary" value="Bets"/>
     </div>
-    <div class="col-md-4">
-        <input id="transactions" type="button" value="Transactions" />
+    <div class="col-md-3">
+        <input id="transactions" type="submit" class="btn btn-primary" value="Transactions" />
     </div>
-    <div class="col-md-4">
-        <input id="deposit" type="button" value="Deposit" />
+    <div class="col-md-3">
+        <input id="deposit" type="submit" class="btn btn-primary" value="Deposit" />
     </div>
-    <div class="col-md-4">
-        <input id="withdraw" type="button" value="Withdraw" />
+    <div class="col-md-3">
+        <input id="withdraw" type="submit" class="btn btn-primary" value="Withdraw" />
     </div>
 </div>
-<div class="container"></div>
+<div id="content"></div>
 
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 <script>
     $(function() {
-        $(".RemoveBet").click(function () {
-            $.ajax({
-                type: "DELETE",
-                url: "/GameBet/Remove",
-                data: { gameId: this.id },
-                dataType: "html",
-                success: function (response) {
-                    $('#betGrid').html(response);
-                    $('#betsTable').removeAttr("hidden");
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            })
-        })
+        $("#bets").click(function () {
+            LoadPartialView("bets", "/User/UserBets")
+        });
+        $("#transactions").click(function () {
+            LoadPartialView("transactions", "/User/GetTransactions")
+        });
+        $("#deposit").click(function () {
+            LoadPartialView("deposit", "/User/Deposit")
+        }); 
+        $("#withdraw").click(function () {
+            LoadPartialView("withdraw", "/User/Withdraw")
+        });
+        
+        function LoadPartialView(buttonId, url) {
+            $(`#${buttonId}`).click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: "html",
+                    success: function (response) {
+                        $('#content').html(response);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            });
+        }
     })
 </script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

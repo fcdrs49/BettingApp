@@ -26,5 +26,8 @@ namespace BettingApp.Infrastructure.Data.Models
         public string CurrencyCode { get; set; } = null!;
         [ForeignKey(nameof(CurrencyCode))]
         public Currency Currency { get; set; } = null!;
+
+        [Required]
+        public string CardNumber { get; set; } = null!;
     }
 }

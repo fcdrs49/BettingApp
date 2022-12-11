@@ -2,41 +2,45 @@
 
 @if(Model.Count() == 0)
 {
-    <h1>No transaction history!</h1>
+    <h1 class="text-center">No transaction history!</h1>
 }
 else
 {
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.DateTime)
-            </div>
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.TransactionType)
-            </div>
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.Amount)
-            </div>
-            <div class="col-md-4">
-                @Html.DisplayNameFor(model => model.CurrencyCode)
-            </div>
-        </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.DateTime)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.TransactionType)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.CurrencyCode)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
         @foreach (var transaction in Model)
         {
-            <div class="row">
-                <div class="col-md-4">
+            <tr>
+                <td>
                     @transaction.DateTime
-                </div>
-                <div class="col-md-4">
+                </td>
+                <td>
                     @transaction.TransactionType
-                </div>
-                <div class="col-md-4">
+                </td>
+                <td>
                     @transaction.Amount
-                </div>
-                <div class="col-md-4">
+                </td>
+                <td>
                     @transaction.CurrencyCode
-                </div>
-            </div>
+                </td>
+            </tr>
         }
-    </div>
+        </tbody>
+    </table>
 }

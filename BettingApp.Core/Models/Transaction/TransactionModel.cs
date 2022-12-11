@@ -15,5 +15,8 @@ namespace BettingApp.Core.Models.Transaction
 
         [Display(Name = "Date")]
         public DateTime DateTime { get; set; }
+
+        [Display(Name = "Card Number")]
+        public string CreditCard { get; set; } = null!;
     }
 }

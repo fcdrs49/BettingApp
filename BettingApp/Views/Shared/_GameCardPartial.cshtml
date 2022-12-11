@@ -1,5 +1,4 @@
 ﻿@model GameViewModel
-<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 	<div class="container">
 		<div class="match">
 			<div class="match-header">
@@ -41,14 +40,10 @@
 							@Model.Date
 						</div>
 						<div class="match-bet-options">
-							<button class="match-bet-option">@Model.HomeRate</button>
-							<button class="match-bet-option">@Model.DrawRate</button>
-							<button class="match-bet-option">@Model.AwayRate</button>
+							<button class="match-bet-option home-bet" data-gameid="@Model.Id" data-prediction="1">@Model.HomeRate</button>
+							<button class="match-bet-option draw-bet" data-gameid="@Model.Id" data-prediction="X"> @Model.DrawRate</button>
+							<button class="match-bet-option away-bet" data-gameid="@Model.Id" data-prediction="2">@Model.AwayRate</button>
 						</div>
-						@if (User.Identity != null && User.Identity.IsAuthenticated)
-						{
-							<button class="match-bet-place">Place Bet</button>
-						}
 					</div>
 				</div>
 				<div class="column">

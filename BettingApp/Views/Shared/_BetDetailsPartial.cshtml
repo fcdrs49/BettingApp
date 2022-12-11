@@ -1,0 +1,39 @@
+﻿@model IEnumerable<GameBetViewModel>
+
+<table class=table>
+    <thead>
+        <tr>
+            <th>
+                Home Team
+            </th>
+            <th>
+                Away Team
+            </th>
+            <th>
+                Prediction
+            </th>
+            <th>
+                Bet Rate
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gameBet in Model)
+        {
+            <tr>
+                <td>
+                    @gameBet.HomeTeam
+                </td>
+                <td>
+                    @gameBet.AwayTeam
+                </td>
+                <td>
+                    @gameBet.Prediction
+                </td>
+                <td>
+                    @gameBet.BetRate
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

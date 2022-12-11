@@ -278,3 +278,8 @@ img {
     display: block;
     width: 100px;
 }
+
+
+.active {
+	background-color: blue;
+}

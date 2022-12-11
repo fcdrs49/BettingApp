@@ -2636,7 +2636,26 @@ namespace BettingApp.Infrastructure.Data.Configuration
                 games.Add(new Game { Id = 2571, Finished = false, DateTime = new DateTime(2023, 04, 29, 21, 00, 0), CompetitionId = 9, HomeTeamId = 57, AwayTeamId = 46 });
                 games.Add(new Game { Id = 2572, Finished = false, DateTime = new DateTime(2023, 04, 29, 21, 00, 0), CompetitionId = 9, HomeTeamId = 61, AwayTeamId = 60 });
             }
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                games[i] = GenerateOdds(games[i]);
+            }
             return games;
+        }
+
+        private Game GenerateOdds(Game game)
+        {
+            Random rnd = new Random();
+            var HomePercent = rnd.Next(10, 59) / 100.0;
+            var DrawPercent = rnd.Next(20, 40) / 100.0;
+            var AwayPercent = (1 - HomePercent - DrawPercent);
+
+            game.HomeRate = (decimal)Math.Round(3 / HomePercent / 3.2, 2);
+            game.DrawRate = (decimal)Math.Round(3 / DrawPercent / 3.2, 2);
+            game.AwayRate = (decimal)Math.Round(3 / AwayPercent / 3.2, 2);
+
+            return game;
         }
     }
 }
