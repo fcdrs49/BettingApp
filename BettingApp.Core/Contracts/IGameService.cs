@@ -12,8 +12,8 @@ namespace BettingApp.Core.Contracts
         public Task CreateAsync(GameFormModel model);
         public Task DeleteAsync(int id);
         public Task<GameQueryServiceModel> All(
-            string team = null,
-            string competition = null,
+            string team = "",
+            string competition = "",
             int currentPage = 1,
             int gamesPerPage = 20,
             bool upcoming = false,

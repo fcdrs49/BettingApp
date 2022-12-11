@@ -8,10 +8,10 @@ namespace BettingApp.Core.Models.Game
         public const int GamesPerPage = 20;
 
         [Display(Name = "Search by Team")]
-        public string TeamTerm { get; set; }
+        public string TeamTerm { get; set; } = "";
 
         [Display(Name = "Search by Competition")]
-        public string Competition { get; set; }
+        public string Competition { get; set; } = "";
 
         public int CurrentPage { get; set; } = 1;
 

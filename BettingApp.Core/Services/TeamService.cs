@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
+using BettingApp.Core.Exception;
 using BettingApp.Core.Models.Country;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Core.Models.Team;
@@ -12,12 +13,13 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly ICountryService countryService;
+        private readonly IGuard guard;
 
-
-        public TeamService(IRepository _repo, ICountryService _countryService)
+        public TeamService(IRepository _repo, ICountryService _countryService, IGuard _guard)
         {
             repo = _repo;
             countryService = _countryService;
+            guard = _guard;
         }
 
 
@@ -45,6 +47,7 @@ namespace BettingApp.Core.Services
                 })
                 .FirstOrDefaultAsync();
 
+            guard.AgainstNull(team, "Team can not be found!");
             return team;
         }
 
@@ -60,7 +63,7 @@ namespace BettingApp.Core.Services
                     ImageUrl = t.ImageUrl
                 })
                 .FirstOrDefaultAsync();
-
+            guard.AgainstNull(team, "Team can not be found!");
             team.Countries = await countryService.GetAllAsync();
 
             return team;

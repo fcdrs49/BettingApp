@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
+using BettingApp.Core.Exception;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Models;
@@ -9,10 +10,12 @@ namespace BettingApp.Core.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IRepository repo;
+        private readonly IGuard guard;
 
-        public EmployeeService(IRepository _repo)
+        public EmployeeService(IRepository _repo, IGuard _guard)
         {
             repo = _repo;
+            guard = _guard;
         }
 
 
@@ -32,6 +35,7 @@ namespace BettingApp.Core.Services
                 })
                 .FirstOrDefaultAsync();
 
+            guard.AgainstNull(emp, "Employee can not be null!");
             return emp;
         }
 

@@ -5,7 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
-
+<h2 class="text-center" style="background-color:red">@TempData["ErrorMessage"]</h2>
 <div class="container">
     @foreach (var game in Model)
     {
@@ -120,3 +120,9 @@
         });
     })
 </script>
+
+@section Scripts {
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

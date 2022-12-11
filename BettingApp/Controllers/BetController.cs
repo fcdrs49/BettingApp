@@ -30,7 +30,9 @@ namespace BettingApp.Controllers
             var balance = userService.GetBalance(User.Id());
             if (!ModelState.IsValid || model.Amount > balance)
             {
-                throw new InvalidDataException("Invalid Amount!");
+                TempData["ErrorMessage"] = "Invalid Amount!";
+
+                return RedirectToAction("Index", "Home");
             }
 
             model.GameBets = await GetBetsFromSessionStorage();

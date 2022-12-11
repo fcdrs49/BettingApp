@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 
-                 <form asp-controller="Bet" asp-action="PlaceBet">
+                 <form id="placebetpartial" asp-controller="Bet" asp-action="PlaceBet" data-ajax="true" data-ajax-update="#placebetpartial" data-ajax-mode="update">
                     <div class="row">
                         <div class="col-sm">
                             <label asp-for="Amount"></label>

@@ -189,7 +189,7 @@ namespace BettingApp.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        public async Task<GameQueryServiceModel> All(string team = null, string competition = null, int currentPage = 1, int gamesPerPage = 20, bool upcoming = false, bool results = false)
+        public async Task<GameQueryServiceModel> All(string team = "", string competition = "", int currentPage = 1, int gamesPerPage = 20, bool upcoming = false, bool results = false)
         {
             var result = new GameQueryServiceModel();
             var games = repo.AllReadonly<Game>();

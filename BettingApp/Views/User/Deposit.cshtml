@@ -5,6 +5,8 @@
 }
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+@await Html.PartialAsync("_BalancePartial")
 <h1 class="text-center">Deposit</h1>
 <div class="container">
     <div class="row">
@@ -65,3 +67,9 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

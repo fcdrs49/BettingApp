@@ -2,6 +2,7 @@
 using BettingApp.Extensions;
 using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Transaction;
+using BettingApp.Core.Models.User;
 
 namespace BettingApp.Controllers
 {
@@ -41,14 +42,14 @@ namespace BettingApp.Controllers
             var userId = User.Id();
             var bets = await betService.GetUserBets(userId);
 
-            return PartialView("_BetsPartial", bets);
+            return View(bets);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactions()
+        public async Task<IActionResult> Transactions()
         {
             var userId = User.Id();
-            return PartialView("_TransactionsPartial", await transactionService.GetByUserAsync(userId));
+            return View(await transactionService.GetByUserAsync(userId));
         }
 
         [HttpGet]
@@ -58,7 +59,7 @@ namespace BettingApp.Controllers
             var currencies = await currencyService.AllAsync();
             model.Currencies = currencies.Select(c => c.ISOCode).ToList();
 
-            return PartialView("_DepositPartial", model);
+            return View(model);
         }
 
         [HttpPost]
@@ -91,28 +92,27 @@ namespace BettingApp.Controllers
         {
             var cards = await transactionService.GetUserCards(User.Id());
 
-            var model = new WithdrawFormModel();
-            model.CreditCards = cards;
+            var model = new WithdrawFormModel
+            {
+                CreditCards = cards
+            };
 
-            return PartialView("_WithdrawPartial", model);
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Withdraw(WithdrawFormModel model)
         {
-            if(!ModelState.IsValid)
+            var balance = userService.GetBalance(User.Id());
+            if(!ModelState.IsValid || model.Amount > balance)
             {
+                ModelState.AddModelError("", "Invalid Amount!");
+                model.CreditCards = await transactionService.GetUserCards(User.Id());
                 return View(model);
             }
 
             await transactionService.WithdrawAsync(model, User.Id());
             return RedirectToAction("Index", "Home");
-        }
-
-        [HttpGet]
-        public IActionResult Balance()
-        {
-            return View();
         }
     }
 }

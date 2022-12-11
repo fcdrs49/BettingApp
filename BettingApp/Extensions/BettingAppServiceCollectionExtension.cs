@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
+using BettingApp.Core.Exception;
 using BettingApp.Core.Services;
 using BettingApp.Infrastructure.Data.Common;
 
@@ -18,6 +19,7 @@ public static class BettingAppServiceCollectionExtension
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IBetService, BetService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IGuard, Guard>();
 
         return services;
     }
