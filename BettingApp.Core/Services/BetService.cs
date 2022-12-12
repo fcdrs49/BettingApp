@@ -5,20 +5,21 @@ using BettingApp.Infrastructure.Data;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using System.Web.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BettingApp.Core.Services
 {
     public class BetService : IBetService
     {
         private readonly IRepository repo;
+        private readonly ILogger logger;
 
-        public BetService(IRepository _repo, BettingAppDbContext _context)
+        public BetService(IRepository _repo, BettingAppDbContext _context, ILogger _logger)
         {
             repo = _repo;
+            logger = _logger;
         }
 
         public async Task CreateBetAsync(BetQueryModel model, string userId)
@@ -30,9 +31,15 @@ namespace BettingApp.Core.Services
                 CurrencyCode = "BGN",
                 DateTime = DateTime.Now
             };
-
-            await repo.AddAsync(bet);
-            await repo.SaveChangesAsync();
+            try
+            {
+                await repo.AddAsync(bet);
+                await repo.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                logger.LogError("Failed to create bet", ex);
+            }
 
 
             foreach (var gb in model.GameBets)
@@ -53,8 +60,15 @@ namespace BettingApp.Core.Services
                     Prediction = sign
                 };
 
-                await repo.AddAsync(gameBet);
-                await repo.SaveChangesAsync();
+                try
+                {
+                    await repo.AddAsync(gameBet);
+                    await repo.SaveChangesAsync();
+                }
+                catch(Exception ex)
+                {
+                    logger.LogError("Failed to create game bet", ex);
+                }
             }
         }
 

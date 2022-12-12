@@ -1,4 +1,4 @@
-﻿namespace BettingApp.Core.Exception
+﻿namespace BettingApp.Core.Exceptions
 {
     public class BettingAppException : ApplicationException 
     {

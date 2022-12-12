@@ -4,6 +4,7 @@ using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BettingApp.Core.Services
 {
@@ -11,12 +12,15 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly IBetService betService;
+        private readonly ILogger logger;
 
         public TransactionService(
-            IRepository _repo, IBetService _betService)
+            IRepository _repo, IBetService _betService,
+            ILogger _logger)
         {
             repo = _repo;
             betService = _betService;
+            logger = _logger;
         }
 
         public async Task AddUserCard(string userId, CreditCardModel model)
@@ -43,9 +47,15 @@ namespace BettingApp.Core.Services
                 TransactionType = TransactionType.Deposit,
                 CardNumber = model.CardNumber
             };
-
-            await repo.AddAsync(transaction);
-            await repo.SaveChangesAsync();
+            try
+            {
+                await repo.AddAsync(transaction);
+                await repo.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                logger.LogError($"Deposit Failed! User Id: {userId}, Deposit Amount: {model.Amount}, Card Number: {model.CardNumber}", ex);
+            }
         }
 
         public async Task<IEnumerable<TransactionModel>> ByUserAsync(string userId)
@@ -94,6 +104,7 @@ namespace BettingApp.Core.Services
             var balance = transactionsAmount + betsAmount;
             if (model.Amount > balance)
             {
+                logger.LogInformation($"Attempt to withdraw invalid amount! User Id: {userId}, Amount: {model.Amount}, Balance: {balance}");
                 throw new InvalidOperationException("Amount is bigger than balance!");
             }
 
