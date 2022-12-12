@@ -24,7 +24,7 @@ namespace BettingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            var teams = await teamService.GetAllAsync();
+            var teams = await teamService.AllAsync();
             var competitions = await competitionService.GetAllAsync();
 
             var model = new GameFormModel()
@@ -52,7 +52,7 @@ namespace BettingApp.Controllers
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await gameService.ViewByIdAsync(id);
+            var model = await gameService.DetailsByIdAsync(id);
 
             return View(model);
         }
@@ -60,7 +60,7 @@ namespace BettingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await gameService.FormByIdAsync(id);
+            var model = await gameService.ByIdAsync(id);
 
             return View(model);
         }

@@ -32,13 +32,13 @@ namespace BettingApp.Controllers
         }
         public async Task<IActionResult> Games()
         {
-            return View(await gameService.GetAllAsync());
+            return View(await gameService.AllAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> Countries()
         {
-            return View(await countryService.GetAllAsync());
+            return View(await countryService.AllAsync());
         }
 
         [HttpGet]
@@ -50,13 +50,13 @@ namespace BettingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Employees()
         {
-            return View(await employeeService.GetAllAsync());
+            return View(await employeeService.AllAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> Teams()
         {
-            return View(await teamService.GetAllAsync());
+            return View(await teamService.AllAsync());
         }
     }
 }

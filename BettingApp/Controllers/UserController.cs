@@ -49,7 +49,7 @@ namespace BettingApp.Controllers
         public async Task<IActionResult> Transactions()
         {
             var userId = User.Id();
-            return View(await transactionService.GetByUserAsync(userId));
+            return View(await transactionService.ByUserAsync(userId));
         }
 
         [HttpGet]

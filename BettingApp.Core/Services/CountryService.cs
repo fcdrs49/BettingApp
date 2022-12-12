@@ -39,7 +39,7 @@ namespace BettingApp.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CountryModel>> GetAllAsync()
+        public async Task<IEnumerable<CountryModel>> AllAsync()
         {
             return await repo.AllReadonly<Country>()
                 .Select(c => new CountryModel()
@@ -51,7 +51,7 @@ namespace BettingApp.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<CountryModel> GetByIdAsync(int id)
+        public async Task<CountryModel> ByIdAsync(int id)
         {
             return await repo.AllReadonly<Country>()
                 .Where(c => c.Id == id)
@@ -64,7 +64,7 @@ namespace BettingApp.Core.Services
                 .FirstAsync();
         }
 
-        public async Task DeleteByIdAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             if(await repo.AllReadonly<Competition>()
                 .Where(c => c.CountryId == id)

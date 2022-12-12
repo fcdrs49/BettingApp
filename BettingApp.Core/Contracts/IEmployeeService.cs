@@ -4,10 +4,10 @@ namespace BettingApp.Core.Contracts
 {
     public interface IEmployeeService
     {
-        public Task<EmployeeFormModel> GetByIdAsync(int id);
-        public Task<EmployeeViewModel> GetDetailsByIdAsync(int id);
+        public Task<EmployeeFormModel> ByIdAsync(int id);
+        public Task<EmployeeViewModel> DetailsByIdAsync(int id);
         public Task EditAsync(EmployeeFormModel model);
-        public Task<IEnumerable<EmployeeViewModel>> GetAllAsync();
+        public Task<IEnumerable<EmployeeViewModel>> AllAsync();
         public Task CreateAsync(EmployeeFormModel model);
         public Task DeleteAsync(int id);
     }

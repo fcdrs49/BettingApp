@@ -1,12 +1,16 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Team;
-using BettingApp.Infrastructure.Data.Models;
+using BettingApp.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BettingApp.Areas.Admin.AdminConstants;
 
-namespace BettingApp.Controllers
+namespace BettingApp.Areas.Admin.Controllers
 {
-	public class TeamController : Controller
-	{
+    [Area(AreaName)]
+    [Authorize(Roles = AdminRoleName)]
+    public class TeamController : Controller
+    {
         private readonly ITeamService teamService;
         private readonly ICountryService countryService;
 
@@ -16,19 +20,16 @@ namespace BettingApp.Controllers
             countryService = _countryService;
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> All()
         {
-            var model = await teamService.GetDetailsByIdAsync(id);
-
-            return View(model);
+            return View(await teamService.AllAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await teamService.GetByIdAsync(id);
+            var model = await teamService.ByIdAsync(id);
 
             return View(model);
         }
@@ -36,28 +37,28 @@ namespace BettingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(TeamFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             await teamService.EditAsync(model);
 
-            return RedirectToAction(nameof(Details), new { id = model.Id });
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
         public async Task<IActionResult> Add()
         {
             var team = new TeamFormModel();
-            team.Countries = await countryService.GetAllAsync();
+            team.Countries = await countryService.AllAsync();
             return View(team);
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(TeamFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }

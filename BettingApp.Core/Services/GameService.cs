@@ -21,7 +21,7 @@ namespace BettingApp.Core.Services
             teamService = _teamService;
         }
 
-        public async Task<GameViewModel> ViewByIdAsync(int id)
+        public async Task<GameViewModel> DetailsByIdAsync(int id)
         {
             return await repo.AllReadonly<Game>()
                 .Where(g => g.Id == id)
@@ -89,9 +89,9 @@ namespace BettingApp.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<GameFormModel> FormByIdAsync(int id)
+        public async Task<GameFormModel> ByIdAsync(int id)
         {
-            var teams = await teamService.GetAllAsync();
+            var teams = await teamService.AllAsync();
             var competitions = await competitionService.GetAllAsync();
 
             var game = await repo.AllReadonly<Game>()
@@ -118,7 +118,7 @@ namespace BettingApp.Core.Services
             
         }
 
-        public async Task<IEnumerable<GameListModel>> GetAllAsync()
+        public async Task<IEnumerable<GameListModel>> AllAsync()
         {
             return await repo.AllReadonly<Game>()
                 .Select(g => new GameListModel()

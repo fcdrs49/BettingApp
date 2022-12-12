@@ -21,8 +21,4 @@
     <ProjectReference Include="..\BettingApp.Core\BettingApp.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Models\" />
-  </ItemGroup>
-
 </Project>

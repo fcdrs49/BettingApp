@@ -48,7 +48,7 @@ namespace BettingApp.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TransactionModel>> GetByUserAsync(string userId)
+        public async Task<IEnumerable<TransactionModel>> ByUserAsync(string userId)
         {
             return await repo.AllReadonly<Transaction>()
                 .Where(t => t.UserId == userId)
@@ -63,7 +63,7 @@ namespace BettingApp.Core.Services
                 .ToListAsync();
         }
 
-        public decimal GetTotalAsync(string userId)
+        public decimal TotalAmount(string userId)
         {
             return repo.AllReadonly<Transaction>()
                 .Where(t => t.UserId == userId)
@@ -89,7 +89,7 @@ namespace BettingApp.Core.Services
 
         public async Task WithdrawAsync(WithdrawFormModel model, string userId)
         {
-            var transactionsAmount = GetTotalAsync(userId);
+            var transactionsAmount = TotalAmount(userId);
             var betsAmount = betService.GetBetsAmount(userId);
             var balance = transactionsAmount + betsAmount;
             if (model.Amount > balance)

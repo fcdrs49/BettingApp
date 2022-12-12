@@ -1,9 +1,13 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Country;
+using Microsoft.AspNetCore.Authorization;
+using static BettingApp.Areas.Admin.AdminConstants;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BettingApp.Controllers
+namespace BettingApp.Areas.Admin.Controllers
 {
+    [Area(AreaName)]
+    [Authorize(Roles = AdminRoleName)]
     public class CountryController : Controller
     {
         private readonly ICountryService countryService;
@@ -13,11 +17,16 @@ namespace BettingApp.Controllers
             countryService = _countryService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            return View(await countryService.AllAsync());
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await countryService.GetByIdAsync(id);
+            var model = await countryService.ByIdAsync(id);
 
             return View(model);
         }
@@ -56,7 +65,7 @@ namespace BettingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            await countryService.DeleteByIdAsync(id);
+            await countryService.DeleteAsync(id);
             return RedirectToAction("Countries", "Admin");
         }
     }

@@ -1,10 +1,13 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Employee;
-using BettingApp.Core.Models.Team;
+using BettingApp.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-namespace BettingApp.Controllers
+using static BettingApp.Areas.Admin.AdminConstants;
+namespace BettingApp.Areas.Admin.Controllers
 {
+    [Area(AreaName)]
+    [Authorize(Roles = AdminRoleName)]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService employeeService;
@@ -20,13 +23,18 @@ namespace BettingApp.Controllers
             teamService = _teamService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            return View(await employeeService.AllAsync());
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await employeeService.GetByIdAsync(id);
-            model.Countries = await countryService.GetAllAsync();
-            model.Teams = await teamService.GetAllAsync();
+            var model = await employeeService.ByIdAsync(id);
+            model.Countries = await countryService.AllAsync();
+            model.Teams = await teamService.AllAsync();
 
             return View(model);
         }
@@ -34,7 +42,7 @@ namespace BettingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EmployeeFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -48,8 +56,8 @@ namespace BettingApp.Controllers
         {
             var model = new EmployeeFormModel();
 
-            model.Countries = await countryService.GetAllAsync();
-            model.Teams = await teamService.GetAllAsync();
+            model.Countries = await countryService.AllAsync();
+            model.Teams = await teamService.AllAsync();
 
             return View(model);
         }
@@ -57,7 +65,7 @@ namespace BettingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(EmployeeFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }

@@ -24,7 +24,7 @@ namespace BettingApp.Core.Services
 
 
 
-        public async Task<TeamViewModel> GetDetailsByIdAsync(int id)
+        public async Task<TeamViewModel> DetailsByIdAsync(int id)
         {
             var team = await repo.AllReadonly<Team>()
                 .Where(t => t.Id == id)
@@ -51,7 +51,7 @@ namespace BettingApp.Core.Services
             return team;
         }
 
-        public async Task<TeamFormModel> GetByIdAsync(int id)
+        public async Task<TeamFormModel> ByIdAsync(int id)
         {
             var team = await repo.All<Team>()
                 .Where(t => t.Id == id)
@@ -64,7 +64,7 @@ namespace BettingApp.Core.Services
                 })
                 .FirstOrDefaultAsync();
             guard.AgainstNull(team, "Team can not be found!");
-            team.Countries = await countryService.GetAllAsync();
+            team.Countries = await countryService.AllAsync();
 
             return team;
         }
@@ -88,7 +88,7 @@ namespace BettingApp.Core.Services
             }
         }
 
-        public async Task<IEnumerable<TeamViewModel>> GetAllAsync()
+        public async Task<IEnumerable<TeamViewModel>> AllAsync()
         {
             return await repo.AllReadonly<Team>()
                 .Select(t => new TeamViewModel()

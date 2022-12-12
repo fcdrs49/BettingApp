@@ -13,9 +13,6 @@ namespace BettingApp.Infrastructure.Data.Models
         [StringLength(LastNameMaxLength)]
         public string? LastName { get; set; } = null!;
 
-        [Precision(18,2)]
-        public decimal Balance { get; set; }
-
         public IEnumerable<UserCard> Cards { get; set; }
             = new List<UserCard>();
 

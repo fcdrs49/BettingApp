@@ -19,7 +19,7 @@ namespace BettingApp.Core.Services
         }
 
 
-        public async Task<EmployeeFormModel> GetByIdAsync(int id)
+        public async Task<EmployeeFormModel> ByIdAsync(int id)
         {
             var emp = await repo.All<Employee>()
                 .Select(e => new EmployeeFormModel()
@@ -55,7 +55,7 @@ namespace BettingApp.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<EmployeeViewModel>> GetAllAsync()
+        public async Task<IEnumerable<EmployeeViewModel>> AllAsync()
         {
             return await repo.AllReadonly<Employee>()
                 .Select(e => new EmployeeViewModel()
@@ -71,7 +71,7 @@ namespace BettingApp.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<EmployeeViewModel> GetDetailsByIdAsync(int id)
+        public async Task<EmployeeViewModel> DetailsByIdAsync(int id)
         {
             var emp = await repo.GetByIdAsync<Employee>(id);
 

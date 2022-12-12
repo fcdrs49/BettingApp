@@ -5,9 +5,9 @@ namespace BettingApp.Core.Contracts
     public interface IGameService
     {
         public Task<IEnumerable<GameViewModel>> NextTenGames();
-        public Task<GameViewModel> ViewByIdAsync(int id);
-        public Task<GameFormModel> FormByIdAsync(int id);
-        public Task<IEnumerable<GameListModel>> GetAllAsync();
+        public Task<GameViewModel> DetailsByIdAsync(int id);
+        public Task<GameFormModel> ByIdAsync(int id);
+        public Task<IEnumerable<GameListModel>> AllAsync();
         public Task EditAsync(GameFormModel model);
         public Task CreateAsync(GameFormModel model);
         public Task DeleteAsync(int id);

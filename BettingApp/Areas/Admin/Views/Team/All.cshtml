@@ -1,0 +1,30 @@
+﻿@model IEnumerable<TeamViewModel>
+
+@{
+    ViewBag.Title = "All Teams";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<a class="btn btn-primary text-center" asp-controller="Employee" asp-action="Add">Create New</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th><label>Logo</label></th>
+            <th><label>Name</label></th>
+            <th><label>Country</label></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model)
+        {
+            <tr>
+                <td><img src="@team.ImageUrl" height="100" width="100" /></td>
+                <td><label>@team.Name</label></td>
+                <td><label>@team.Country</label></td>
+                <td><a asp-controller="Team" asp-action="Edit" asp-route-for="@team.Id" class="btn btn primary">Edit</a></td>
+                <td><a asp-controller="Team" asp-action="Delete" asp-route-for="@team.Id" class="btn btn primary">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

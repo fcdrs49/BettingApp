@@ -1,0 +1,34 @@
+﻿@model IEnumerable<CurrencyModel>
+
+@{
+    ViewBag.Title = "All Currencies";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<a class="btn btn-primary text-center" asp-controller="Currency" asp-action="Add">Create New</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th><label>Code</label></th>
+            <th><label>Description</label></th>
+            <th><label>Short Description</label></th>
+            <th><label>Exchange Rate</label></th>
+            <th><label>Date Time Updated</label></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var currency in Model)
+        {
+            <tr>
+                <td><label>@currency.ISOCode</label></td>
+                <td><label>@currency.Description</label></td>
+                <td><label>@currency.ShortDescription</label></td>
+                <td><label>@currency.ExchangeRate</label></td>
+                <td><label>@currency.DateTime</label></td>
+                <td><a asp-controller="Currency" asp-action="Edit" asp-route-for="@currency.ISOCode" class="btn btn primary">Edit</a></td>
+                <td><a asp-controller="Currency" asp-action="Delete" asp-route-for="@currency.ISOCode" class="btn btn primary">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
