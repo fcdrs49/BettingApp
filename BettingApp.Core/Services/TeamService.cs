@@ -1,6 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Exception;
-using BettingApp.Core.Models.Country;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Core.Models.Team;
 using BettingApp.Infrastructure.Data.Common;

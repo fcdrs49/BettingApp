@@ -1,5 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Exception;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Services;
 using BettingApp.Infrastructure.Data.Common;
 
