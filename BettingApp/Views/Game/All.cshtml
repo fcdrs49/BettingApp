@@ -71,11 +71,36 @@
         <h2 class="text-center">No games found by the given criteria!</h2>
     } 
 
-    @foreach (var game in Model.Games)
-    {
-        @await Html.PartialAsync("../Shared/_GameCardPartial.cshtml", game)
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><label>Competition</label></th>
+                <th><label>Home Team</label></th>
+                <th><label>Away Team</label></th>
+                <th><label>Home Rate</label></th>
+                <th><label>Draw Rate</label></th>
+                <th><label>Away Rate</label></th>
+                <th><label>Date</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in Model.Games)
+            {
+                <tr>
+                    <td><label>@game.Competition</label></td>
+                    <td><label>@game.HomeTeam.Name</label></td>
+                    <td><label>@game.AwayTeam.Name</label></td>
+                    <td><label>@game.HomeRate</label></td>
+                    <td><label>@game.DrawRate</label></td>
+                    <td><label>@game.AwayRate</label></td>
+                    <td><label>@game.Date</label></td>
+                    <td><a asp-controller="Game" asp-action="Edit" asp-route-for="@game.Id" class="btn btn primary">Edit</a></td>
+                    <td><a asp-controller="Game" asp-action="Delete" asp-route-for="@game.Id" class="btn btn primary">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
     }
-    @await Html.PartialAsync("../Shared/_GameBetsPartial.cshtml")
 </div>
 
 <script>

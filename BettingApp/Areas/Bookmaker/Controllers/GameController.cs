@@ -1,11 +1,13 @@
 ﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Models.Bet;
 using BettingApp.Core.Models.Game;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BettingApp.Areas.Bookmaker.BookmakerConstants;
 
-namespace BettingApp.Controllers
+namespace BettingApp.Areas.Bookmaker.Controllers
 {
+    [Area(AreaName)]
+    [Authorize(Roles = BookmakerRoleName)]
     public class GameController : Controller
     {
         private readonly IGameService gameService;
@@ -19,8 +21,6 @@ namespace BettingApp.Controllers
             competitionService = _competitionService;
         }
 
-
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Add()
         {
@@ -36,11 +36,10 @@ namespace BettingApp.Controllers
             return View(model);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Add(GameFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -49,7 +48,6 @@ namespace BettingApp.Controllers
             return RedirectToAction("Games", "Admin");
         }
 
-        [Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var model = await gameService.DetailsByIdAsync(id);
@@ -64,18 +62,18 @@ namespace BettingApp.Controllers
 
             return View(model);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Edit(GameFormModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             await gameService.EditAsync(model);
 
-            return RedirectToAction(nameof(Details), new { Id = model.Id });
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
