@@ -1,1 +1,16 @@
+global using BettingApp.Core.Contracts;
+global using BettingApp.Core.Exceptions;
+global using BettingApp.Core.Models.Bet;
+global using BettingApp.Core.Models.Competition;
+global using BettingApp.Core.Models.Game;
+global using BettingApp.Core.Models.GameBet;
+global using BettingApp.Core.Models.Team;
+global using BettingApp.Core.Services;
+global using BettingApp.Infrastructure.Data;
+global using BettingApp.Infrastructure.Data.Common;
+global using BettingApp.Infrastructure.Data.Enums;
+global using BettingApp.Infrastructure.Data.Models;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using Moq;
 global using NUnit.Framework;

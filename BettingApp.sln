@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingApp.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingApp.Core", "BettingApp.Core\BettingApp.Core.csproj", "{9438EDEB-0B86-498C-8139-39A4D71E2B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingApp.UnitTests", "BettingApp.UnitTests\BettingApp.UnitTests.csproj", "{0614B86E-4E35-454F-AB1B-76E47B446D2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingApp.UnitTests", "BettingApp.UnitTests\BettingApp.UnitTests.csproj", "{0614B86E-4E35-454F-AB1B-76E47B446D2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CA28337B-7605-4EB7-B0BC-9ADE4B7F162F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

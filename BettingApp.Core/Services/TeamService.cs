@@ -21,8 +21,6 @@ namespace BettingApp.Core.Services
             guard = _guard;
         }
 
-
-
         public async Task<TeamViewModel> DetailsByIdAsync(int id)
         {
             var team = await repo.AllReadonly<Team>()

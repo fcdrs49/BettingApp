@@ -47,15 +47,8 @@ namespace BettingApp.Core.Services
                 TransactionType = TransactionType.Deposit,
                 CardNumber = model.CardNumber
             };
-            try
-            {
-                await repo.AddAsync(transaction);
-                await repo.SaveChangesAsync();
-            }
-            catch(Exception ex)
-            {
-                logger.LogError($"Deposit Failed! User Id: {userId}, Deposit Amount: {model.Amount}, Card Number: {model.CardNumber}", ex);
-            }
+            await repo.AddAsync(transaction);
+            await repo.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TransactionModel>> ByUserAsync(string userId)
@@ -84,8 +77,8 @@ namespace BettingApp.Core.Services
         {
             return await repo.AllReadonly<UserCard>()
                 .Where(cc => cc.UserId == userId &&
-                      (cc.ExpirationYear > DateTime.Now.Year) ||
-                      (cc.ExpirationYear == DateTime.Now.Year && cc.ExpirationMonth >= DateTime.Now.Month))
+                      (cc.ExpirationYear > DateTime.Now.Year ||
+                      (cc.ExpirationYear == DateTime.Now.Year && cc.ExpirationMonth >= DateTime.Now.Month)))
                 .Select(cc => cc.CardNumber)
                 .ToListAsync();
         }

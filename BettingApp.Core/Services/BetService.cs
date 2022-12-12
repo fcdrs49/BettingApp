@@ -6,7 +6,6 @@ using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Web.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BettingApp.Core.Services
@@ -16,7 +15,7 @@ namespace BettingApp.Core.Services
         private readonly IRepository repo;
         private readonly ILogger<BetService> logger;
 
-        public BetService(IRepository _repo, BettingAppDbContext _context, ILogger<BetService> _logger)
+        public BetService(IRepository _repo, ILogger<BetService> _logger)
         {
             repo = _repo;
             logger = _logger;
@@ -24,6 +23,11 @@ namespace BettingApp.Core.Services
 
         public async Task CreateBetAsync(BetQueryModel model, string userId)
         {
+            if(model.GameBets.Count < 1)
+            {
+                throw new InvalidOperationException("No games selected for bet!");
+            }
+
             var bet = new Bet()
             {
                 UserId = userId,
@@ -31,15 +35,8 @@ namespace BettingApp.Core.Services
                 CurrencyCode = "BGN",
                 DateTime = DateTime.Now
             };
-            try
-            {
-                await repo.AddAsync(bet);
-                await repo.SaveChangesAsync();
-            }
-            catch(Exception ex)
-            {
-                logger.LogError("Failed to create bet", ex);
-            }
+            await repo.AddAsync(bet);
+            await repo.SaveChangesAsync();
 
 
             foreach (var gb in model.GameBets)
@@ -60,15 +57,8 @@ namespace BettingApp.Core.Services
                     Prediction = sign
                 };
 
-                try
-                {
-                    await repo.AddAsync(gameBet);
-                    await repo.SaveChangesAsync();
-                }
-                catch(Exception ex)
-                {
-                    logger.LogError("Failed to create game bet", ex);
-                }
+                await repo.AddAsync(gameBet);
+                await repo.SaveChangesAsync();
             }
         }
 
