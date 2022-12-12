@@ -12,11 +12,11 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly IBetService betService;
-        private readonly ILogger logger;
+        private readonly ILogger<TransactionService> logger;
 
         public TransactionService(
             IRepository _repo, IBetService _betService,
-            ILogger _logger)
+            ILogger<TransactionService> _logger)
         {
             repo = _repo;
             betService = _betService;

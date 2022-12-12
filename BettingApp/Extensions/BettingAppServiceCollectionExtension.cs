@@ -19,7 +19,7 @@ public static class BettingAppServiceCollectionExtension
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IBetService, BetService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IGuard, Guard>();
+        services.AddScoped<IGuard, Guard>();    
 
         return services;
     }

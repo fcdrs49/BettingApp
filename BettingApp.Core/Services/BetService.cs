@@ -14,9 +14,9 @@ namespace BettingApp.Core.Services
     public class BetService : IBetService
     {
         private readonly IRepository repo;
-        private readonly ILogger logger;
+        private readonly ILogger<BetService> logger;
 
-        public BetService(IRepository _repo, BettingAppDbContext _context, ILogger _logger)
+        public BetService(IRepository _repo, BettingAppDbContext _context, ILogger<BetService> _logger)
         {
             repo = _repo;
             logger = _logger;
