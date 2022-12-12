@@ -21,7 +21,8 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddEntityFrameworkStores<BettingAppDbContext>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddApplicationServices();  
+builder.Services.AddApplicationServices();
+builder.Services.AddResponseCaching();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -53,8 +54,15 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "Areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapDefaultControllerRoute();
+    endpoints.MapRazorPages();
+});
+
 app.UseSession();
-app.MapDefaultControllerRoute();
-app.MapRazorPages();
 
 app.Run();

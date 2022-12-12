@@ -1,9 +1,8 @@
 ﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Models.GameBet;
 using BettingApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Text.Json;
+using static BettingApp.Areas.Admin.AdminConstants;
 
 namespace BettingApp.Controllers
 {
@@ -18,6 +17,10 @@ namespace BettingApp.Controllers
 
         public async Task<IActionResult> Index()
         {   
+            if(User.IsInRole(AdminRoleName))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
             var model = await gameService.NextTenGames();
 
             return View(model);

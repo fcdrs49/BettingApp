@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="mt-4 p-5 bg-light text-center">
+    <h2 class="display-4">Hello, Admin!</h2>
+    <p class="lead mb-1 mt-3">
+        This is your administrator area - you can <b>read</b>, <b>create</b>,
+        <b>delete</b> and <b>edit</b> bets data.
+    </p>
+    <p class="lead mt-1">
+        You can also see <b>all users</b>, <b>bets</b> and <b>transactions</b> in the system.
+    </p>
+    <hr class="my-4">
+
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Country" asp-action="All"
+           class="btn btn-primary btn-lg">All Countries</a>
+        <a asp-area="Admin" asp-controller="Country" asp-action="Add"
+           class="btn btn-primary btn-lg">Add Country</a>
+    </div>
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Currency" asp-action="All"
+           class="btn btn-primary btn-lg">All Currencies</a>
+        <a asp-area="Admin" asp-controller="Currency" asp-action="Add"
+           class="btn btn-primary btn-lg">Add Currency</a>
+    </div>    
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Employee" asp-action="All"
+           class="btn btn-primary btn-lg">All Employees</a>
+        <a asp-area="Admin" asp-controller="Employee" asp-action="Add"
+           class="btn btn-primary btn-lg">Add Employee</a>
+    </div>
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Game" asp-action="All"
+           class="btn btn-primary btn-lg">All Games</a>
+        <a asp-area="Admin" asp-controller="Game" asp-action="Add"
+           class="btn btn-primary btn-lg">Add Game</a>
+    </div>
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Team" asp-action="All"
+           class="btn btn-primary btn-lg">All Teams</a>
+        <a asp-area="Admin" asp-controller="Tean" asp-action="Add"
+           class="btn btn-primary btn-lg">Add Team</a>
+    </div>
+    <div class="mt-4 p-5 bg-light text-center">
+        <a asp-area="Admin" asp-controller="Transaction" asp-action="All"
+           class="btn btn-primary btn-lg">All Transactions</a>
+    </div>
+</div>
