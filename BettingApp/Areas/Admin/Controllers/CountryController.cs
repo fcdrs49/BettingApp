@@ -3,6 +3,7 @@ using BettingApp.Core.Models.Country;
 using Microsoft.AspNetCore.Authorization;
 using static BettingApp.Areas.Admin.AdminConstants;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BettingApp.Areas.Admin.Controllers
 {
@@ -11,16 +12,25 @@ namespace BettingApp.Areas.Admin.Controllers
     public class CountryController : Controller
     {
         private readonly ICountryService countryService;
+        private readonly IMemoryCache cache;
 
-        public CountryController(ICountryService _countryService)
+        public CountryController(ICountryService _countryService, IMemoryCache _cache)
         {
             countryService = _countryService;
+            cache = _cache;
         }
 
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            return View(await countryService.AllAsync());
+            var countries = await countryService.AllAsync();
+
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(1440));
+
+            cache.Set(CountriesCacheKey, countries, cacheOptions);
+
+            return View(countries);
         }
 
         [HttpGet]
@@ -39,8 +49,8 @@ namespace BettingApp.Areas.Admin.Controllers
                 return View(model);
             }
             await countryService.EditAsync(model);
-
-            return RedirectToAction("Countries", "Admin");
+            cache.Remove(CountriesCacheKey);
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -58,15 +68,16 @@ namespace BettingApp.Areas.Admin.Controllers
             }
 
             await countryService.CreateAsync(model);
-
-            return RedirectToAction("Countries", "Admin");
+            cache.Remove(CountriesCacheKey);
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             await countryService.DeleteAsync(id);
-            return RedirectToAction("Countries", "Admin");
+            cache.Remove(CountriesCacheKey);
+            return RedirectToAction(nameof(All));
         }
     }
 }

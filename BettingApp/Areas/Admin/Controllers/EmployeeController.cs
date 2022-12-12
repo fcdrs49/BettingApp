@@ -3,6 +3,7 @@ using BettingApp.Core.Models.Employee;
 using BettingApp.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using static BettingApp.Areas.Admin.AdminConstants;
 namespace BettingApp.Areas.Admin.Controllers
 {
@@ -13,20 +14,30 @@ namespace BettingApp.Areas.Admin.Controllers
         private readonly IEmployeeService employeeService;
         private readonly ICountryService countryService;
         private readonly ITeamService teamService;
+        private readonly IMemoryCache cache;
 
         public EmployeeController(IEmployeeService _employeeService,
             ICountryService _countryService,
-            ITeamService _teamService)
+            ITeamService _teamService,
+            IMemoryCache _cache)
         {
             employeeService = _employeeService;
             countryService = _countryService;
             teamService = _teamService;
+            cache = _cache;
         }
 
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            return View(await employeeService.AllAsync());
+            var employees = await employeeService.AllAsync();
+
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(1440));
+
+            cache.Set(EmployeesCacheKey, employees, cacheOptions);
+
+            return View(employees);
         }
 
         [HttpGet]
@@ -48,7 +59,9 @@ namespace BettingApp.Areas.Admin.Controllers
             }
             await employeeService.EditAsync(model);
 
-            return RedirectToAction("Employees", "Admin");
+            cache.Remove(EmployeesCacheKey);
+
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -72,14 +85,19 @@ namespace BettingApp.Areas.Admin.Controllers
 
             await employeeService.CreateAsync(model);
 
-            return RedirectToAction("Employees", "Admin");
+            cache.Remove(EmployeesCacheKey);
+
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             await employeeService.DeleteAsync(id);
-            return RedirectToAction("Employees", "Admin");
+
+            cache.Remove(EmployeesCacheKey);
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

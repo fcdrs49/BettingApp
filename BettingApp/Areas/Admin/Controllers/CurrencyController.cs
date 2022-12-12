@@ -2,6 +2,7 @@
 using BettingApp.Core.Models.Currency;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using static BettingApp.Areas.Admin.AdminConstants;
 
 namespace BettingApp.Areas.Admin.Controllers
@@ -11,16 +12,25 @@ namespace BettingApp.Areas.Admin.Controllers
     public class CurrencyController : Controller
     {
         private readonly ICurrencyService currencyService;
+        private readonly IMemoryCache cache;
 
-        public CurrencyController(ICurrencyService _currencyService)
+        public CurrencyController(ICurrencyService _currencyService, IMemoryCache _cache)
         {
             currencyService = _currencyService;
+            cache = _cache;
         }
 
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            return View(await currencyService.AllAsync());
+            var currencies = await currencyService.AllAsync();
+
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(1440));
+
+            cache.Set(CurrenciesCacheKey, currencies, cacheOptions);
+
+            return View(currencies);
         }
 
         [HttpGet]
@@ -38,8 +48,8 @@ namespace BettingApp.Areas.Admin.Controllers
             }
 
             await currencyService.EditAsync(model);
-
-            return RedirectToAction("Currencies", "Admin");
+            cache.Remove(CurrenciesCacheKey);
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -57,15 +67,16 @@ namespace BettingApp.Areas.Admin.Controllers
             }
 
             await currencyService.CreateAsync(model);
-            return RedirectToAction("Currencies", "Admin");
+            cache.Remove(CurrenciesCacheKey);
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(string ISOCode)
         {
             await currencyService.DeleteAsync(ISOCode);
-
-            return RedirectToAction("Currencies", "Admin");
+            cache.Remove(CurrenciesCacheKey);
+            return RedirectToAction(nameof(All));
         }
     }
 }

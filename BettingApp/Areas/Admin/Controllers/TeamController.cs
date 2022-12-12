@@ -3,6 +3,7 @@ using BettingApp.Core.Models.Team;
 using BettingApp.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using static BettingApp.Areas.Admin.AdminConstants;
 
 namespace BettingApp.Areas.Admin.Controllers
@@ -13,17 +14,26 @@ namespace BettingApp.Areas.Admin.Controllers
     {
         private readonly ITeamService teamService;
         private readonly ICountryService countryService;
+        private readonly IMemoryCache cache;
 
-        public TeamController(ITeamService _teamService, ICountryService _countryService)
+        public TeamController(ITeamService _teamService, ICountryService _countryService, IMemoryCache _cache)
         {
             teamService = _teamService;
             countryService = _countryService;
+            cache = _cache;
         }
 
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            return View(await teamService.AllAsync());
+            var teams = await teamService.AllAsync();
+
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(60));
+
+            cache.Set(TeamsCacheKey, teams, cacheOptions);
+
+            return View(teams);
         }
 
         [HttpGet]
@@ -43,6 +53,9 @@ namespace BettingApp.Areas.Admin.Controllers
             }
 
             await teamService.EditAsync(model);
+
+            cache.Remove(TeamsCacheKey);
+
 
             return RedirectToAction(nameof(All));
         }
@@ -65,7 +78,9 @@ namespace BettingApp.Areas.Admin.Controllers
 
             await teamService.AddAsync(model);
 
-            return RedirectToAction("Teams", "Admin");
+            cache.Remove(TeamsCacheKey);
+
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -73,7 +88,9 @@ namespace BettingApp.Areas.Admin.Controllers
         {
             await teamService.DeleteAsync(id);
 
-            return RedirectToAction("Teams", "Admin");
+            cache.Remove(TeamsCacheKey);
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

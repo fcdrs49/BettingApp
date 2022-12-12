@@ -25,6 +25,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddResponseCaching();
 
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddSession(options =>
 {
