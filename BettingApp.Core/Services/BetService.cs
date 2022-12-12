@@ -108,7 +108,6 @@ namespace BettingApp.Core.Services
             return bets;
         }
 
-        [HttpGet]
         public async Task<IEnumerable<GameBetViewModel>> GetGameBets(int betId)
         {
             var bet = await repo.GetByIdAsync<Bet>(betId);
