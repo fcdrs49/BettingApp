@@ -74,7 +74,7 @@ namespace BettingApp.Core.Services
                 games = games.Where(g => g.HomeTeamId == teamId || g.AwayTeamId == teamId);
             }
 
-            games = games.Where(g => g.DateTime > DateTime.Now);
+            games = games.Where(g => g.DateTime > DateTime.Now && g.Finished == false);
 
             return await games
                 .OrderBy(g => g.DateTime)
@@ -106,7 +106,7 @@ namespace BettingApp.Core.Services
                     HomeGoals = g.HomeTeamGoals,
                     AwayGoals = g.AwayTeamGoals
                 })
-                .Take(10)
+                .Take(count)
                 .ToListAsync();
         }
 
@@ -232,7 +232,8 @@ namespace BettingApp.Core.Services
             if(results)
             {
                 games = games
-                    .Where(g => g.DateTime < DateTime.Now);
+                    .Where(g => g.DateTime < DateTime.Now)
+                    .OrderByDescending(g => g.DateTime);
             }
 
             if(!string.IsNullOrEmpty(team))
@@ -297,13 +298,13 @@ namespace BettingApp.Core.Services
                 games = games.Where(g => g.HomeTeamId == teamId || g.AwayTeamId == teamId);
             }
 
-            games = games.Where(g => g.DateTime < DateTime.Now);
+            games = games.Where(g => g.DateTime < DateTime.Now && g.Finished == true);
 
             return await games
                 .Include(g => g.HomeTeam)
                 .Include(g => g.AwayTeam)
                 .OrderByDescending(g => g.DateTime)
-                .Take(5)
+                .Take(count)
                 .Select(g => new GameViewModel()
                 {
                     Id = g.Id,

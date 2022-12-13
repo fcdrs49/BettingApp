@@ -6,7 +6,6 @@ using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Services
 {

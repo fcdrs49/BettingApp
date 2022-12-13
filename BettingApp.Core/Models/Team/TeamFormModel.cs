@@ -19,7 +19,7 @@ namespace BettingApp.Core.Models.Team
         [Display(Name = "Country")]
         public int CountryId { get; set; }
 
-        [Display(Name = "Image URL")]
+        [Display(Name = "Image")]
         [StringLength(ImageUrlMaxLength, MinimumLength = ImageUrlMinLength)]
         public string? ImageUrl { get; set; }
 

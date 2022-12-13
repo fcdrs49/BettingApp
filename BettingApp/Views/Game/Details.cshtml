@@ -4,9 +4,9 @@
 <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 <div class="row">
     <div class="col-sm-6">
-        @await Html.PartialAsync("../Shared/_LastFiveGamesPartial.cshtml", Model.LastFiveHome, new ViewDataDictionary(ViewData) { { "Team", Model.Game.HomeTeam.Id } })
+        @await Html.PartialAsync("../Shared/_GamesPartial.cshtml", Model.LastFiveHome, new ViewDataDictionary(ViewData) { { "Label", $"{Model.Game.HomeTeam.Name} - Last 5 games" } })
     </div>
     <div class="col-sm-6">
-        @await Html.PartialAsync("../Shared/_LastFiveGamesPartial.cshtml", Model.LastFiveAway, new ViewDataDictionary(ViewData) { { "Team", Model.Game.AwayTeam.Id } })
+        @await Html.PartialAsync("../Shared/_GamesPartial.cshtml", Model.LastFiveAway, new ViewDataDictionary(ViewData) { { "Label", $"{Model.Game.AwayTeam.Name} - Last 5 games" } })
     </div>
 </div>

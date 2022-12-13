@@ -93,6 +93,7 @@ namespace BettingApp.Core.Services
                 bet.GamesCount = gameBets.Count;
                 var betRates = gameBets.Select(gb => gb.BetRate).ToList();
                 bet.BetRate = betRates.Aggregate((a, b) => a * b);
+                bet.Won = await IsBetWon(bet.Id);
             }
 
             return bets;
@@ -113,7 +114,9 @@ namespace BettingApp.Core.Services
                     HomeTeam = b.Game.HomeTeam.Name,
                     AwayTeam = b.Game.AwayTeam.Name,
                     BetRate = b.BetRate,
-                    Prediction = b.Prediction.ToString()
+                    Prediction = b.Prediction.ToString(),
+                    Won = b.Won ? "✔️" : 
+                          b.Game.Finished ? "❌" : ""
                 })
                 .ToListAsync();
         }
@@ -127,10 +130,12 @@ namespace BettingApp.Core.Services
             foreach (var lostBet in lostBets)
             {
                 lostBet.Won = false;
+                repo.Update(lostBet);
                 var bet = await repo.GetByIdAsync<Bet>(lostBet.BetId);
                 if (!bet.Closed && !bet.Cancelled)
                 {
                     bet.Closed = true;
+                    repo.Update(bet);
                 }
             }
 
@@ -141,6 +146,7 @@ namespace BettingApp.Core.Services
             foreach (var wonBet in wonBets)
             {
                 wonBet.Won = true;
+                repo.Update(wonBet);
                 var gameBets = await repo.AllReadonly<GameBet>()
                     .Where(b => b.BetId == wonBet.BetId &&
                            b.GameId != wonBet.GameId)
@@ -155,10 +161,10 @@ namespace BettingApp.Core.Services
                         bet.Won = true;
                         bet.Closed = true;
                         bet.WinAmount = betRate * bet.Amount;
+                        repo.Update(bet);
                     }
                 }
             }
-
             await repo.SaveChangesAsync();
         }
 
@@ -171,15 +177,37 @@ namespace BettingApp.Core.Services
             foreach (var gameBet in gameBets)
             {
                 gameBet.Won = false;
+                repo.Update(gameBet);
                 var bet = await repo.GetByIdAsync<Bet>(gameBet.BetId);
                 if(!bet.Cancelled && bet.Closed)
                 {
                     bet.Won = false;
                     bet.Closed = false;
+                    repo.Update(gameBet);
                 }
             }
 
             await repo.SaveChangesAsync();
+        }
+
+        private async Task<string> IsBetWon(int betId)
+        {
+            var bet = await repo.GetByIdAsync<Bet>(betId);
+            var gameBets = await repo.AllReadonly<GameBet>()
+                .Include(gb => gb.Game)
+                .Where(gb => gb.BetId == bet.Id)
+                .ToListAsync();
+            if(gameBets.All(gb => gb.Won == true) || bet.Cancelled)
+            {
+                return "✔️";
+            }
+
+            if(gameBets.Any(gb => gb.Won == false && gb.Game.Finished == true))
+            {
+                return "❌";
+            }
+
+            return "";
         }
     }
 }

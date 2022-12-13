@@ -117,7 +117,7 @@ namespace BettingApp.Areas.Identity.Pages.Account
                     {
                         if (await _userManager.IsInRoleAsync(user, "Administrator"))
                         {
-                            return RedirectToAction("Index", "Admin", new { Area = "Admin" });
+                            return RedirectToAction("Index", "Home", new { Area = "Admin" });
                         }
                         else if(await _userManager.IsInRoleAsync(user, "Bookmaker"))
                         {

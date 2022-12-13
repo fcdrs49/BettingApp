@@ -1,14 +1,15 @@
 ﻿@model TeamViewModel
 
-<div class="card">
-    <div class="team-logo">
+<div class="row">
+    <div class="col text-sm-end">
         @if(Model.ImageUrl != null)
         {
-            <img src="@Model.ImageUrl" alt="@Model.Name" />
+            <img src="@Model.ImageUrl" alt="@Model.Name" style="display:inline"/>
         }
     </div>
-    <div class="container">
+    <div class="col text-sm-start">
         <h2>@Model.Name</h2>
+        <br />
         <p class="title">@Model.Country</p>
     </div>
 </div>

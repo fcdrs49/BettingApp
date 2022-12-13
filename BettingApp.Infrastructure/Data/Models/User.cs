@@ -7,10 +7,10 @@ namespace BettingApp.Infrastructure.Data.Models
     public class User : IdentityUser<string>
     {
         [StringLength(FirstNameMaxLength)]
-        public string? FirstName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
 
         [StringLength(LastNameMaxLength)]
-        public string? LastName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
 
         public IEnumerable<UserCard> Cards { get; set; }
             = new List<UserCard>();

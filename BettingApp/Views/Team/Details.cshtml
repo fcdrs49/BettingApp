@@ -4,15 +4,23 @@
     ViewData["Title"] = "Details";
 }
 
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 <div class="row text-center">
-  <div class="column">
+    <div class="col">
     @await Html.PartialAsync("../Shared/_TeamCardPartial.cshtml", Model)
-    <div class="text-center">
-        <h1>Employees</h1>
-        @foreach (var emp in Model.Employees)
-        {
-            @await Html.PartialAsync("../Shared/_EmployeeCardPartial.cshtml", emp);
-        }
     </div>
-  </div>
+</div>
+<div class="row text-center">
+    <div class="col">
+        @await Html.PartialAsync("../Shared/_GamesPartial.cshtml", Model.Games, new ViewDataDictionary(ViewData) { { "Label", $"{Model.Name} - Next 5 games" } })
+    </div>
+</div>
+<div class="row text-center">
+    <h1>Employees</h1>
+    @foreach (var emp in Model.Employees)
+    {
+        <div class="col-md-2">
+            @await Html.PartialAsync("../Shared/_EmployeeCardPartial.cshtml", emp);
+        </div>
+    }
 </div>

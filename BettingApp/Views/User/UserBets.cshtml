@@ -36,6 +36,9 @@ else
                         @Html.DisplayNameFor(model => model.WinAmount)
                     </th>
                     <th scope="col">
+                        @Html.DisplayNameFor(model => model.Won)
+                    </th>
+                    <th scope="col">
                     </th>
                 </tr>
             </thead>
@@ -63,6 +66,9 @@ else
                         </td>
                         <td>
                             @bet.WinAmount
+                        </td>
+                        <td>
+                            @bet.Won
                         </td>
                         <td>
                             <a id="@bet.Id" class="Details" href="javascript:;">Details</a>

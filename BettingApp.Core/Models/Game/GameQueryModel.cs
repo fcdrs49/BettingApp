@@ -15,8 +15,10 @@ namespace BettingApp.Core.Models.Game
         [Display(Name = "Search by Competition")]
         public string? Competition { get; set; } = "";
 
+        [Display(Name = "Current Page")]
         public int CurrentPage { get; set; } = 1;
 
+        [Display(Name = "Total Games Count")]
         public int TotalGamesCount { get; set; }
 
         public bool Upcoming { get; set; }

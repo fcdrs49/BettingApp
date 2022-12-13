@@ -39,7 +39,7 @@ namespace BettingApp.Controllers
 
             await betService.CreateBetAsync(model, User.Id());
 
-            return RedirectToAction("Balance", "User");
+            return RedirectToAction("UserBets", "User");
         }
         public async Task<List<GameBetViewModel>> GetBetsFromSessionStorage()
         {

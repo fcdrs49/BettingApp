@@ -3,36 +3,22 @@
 <table class=table>
     <thead>
         <tr>
-            <th>
-                Home Team
-            </th>
-            <th>
-                Away Team
-            </th>
-            <th>
-                Prediction
-            </th>
-            <th>
-                Bet Rate
-            </th>
+            <th>Home Team</th>
+            <th>Away Team</th>
+            <th>Prediction</th>
+            <th>Bet Rate</th>
+            <th>Won</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var gameBet in Model)
         {
             <tr>
-                <td>
-                    @gameBet.HomeTeam
-                </td>
-                <td>
-                    @gameBet.AwayTeam
-                </td>
-                <td>
-                    @gameBet.Prediction
-                </td>
-                <td>
-                    @gameBet.BetRate
-                </td>
+                <td>@gameBet.HomeTeam</td>
+                <td>@gameBet.AwayTeam</td>
+                <td>@gameBet.Prediction</td>
+                <td>@gameBet.BetRate</td>
+                <td>@gameBet.Won</td>
             </tr>
         }
     </tbody>

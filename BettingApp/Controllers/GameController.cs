@@ -83,7 +83,7 @@ namespace BettingApp.Controllers
 
             await gameService.EditAsync(model);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(List));
         }
 
         [Area("Bookmaker")]

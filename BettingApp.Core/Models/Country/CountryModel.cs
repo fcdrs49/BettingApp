@@ -12,6 +12,7 @@ namespace BettingApp.Core.Models.Country
         [StringLength(NameMaxLength, MinimumLength = NameMinLength)]
         public string Name { get; set; } = null!;
 
+        [Display(Name = "Image")]
         [StringLength(ImageUrlMaxLength, MinimumLength = ImageUrlMinLength)]
         public string? ImageUrl { get; set; }
     }

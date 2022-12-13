@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Models.Team;
+using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Models.Competition
 {
@@ -6,6 +7,7 @@ namespace BettingApp.Core.Models.Competition
     {
         public string Competition { get; set; } = null!;
 
+        [Display(Name = "Id")]
         public int CompetitionId { get; set; }
 
         public List<TeamStandingModel> Teams

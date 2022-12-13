@@ -19,6 +19,7 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
+            <th scope="col">Games</th>
             <th scope="col">Win</th>
             <th scope="col">Draw</th>
             <th scope="col">Lose</th>
@@ -37,6 +38,7 @@
                           @Model.Teams[i].Name
                     </a>
                 </td>
+                <td>@Model.Teams[i].Matches</td>
                 <td>@Model.Teams[i].Wins</td>
                 <td>@Model.Teams[i].Draws</td>
                 <td>@Model.Teams[i].Losses</td>

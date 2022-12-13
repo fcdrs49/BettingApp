@@ -7,6 +7,7 @@ namespace BettingApp.Core.Models.Currency
     {
         [Required]
         [StringLength(ISOCodeLength, MinimumLength = ISOCodeLength)]
+        [Display(Name = "Currency Code")]
         public string ISOCode { get; set; } = null!;
 
         [Required]
@@ -15,11 +16,14 @@ namespace BettingApp.Core.Models.Currency
 
         [Required]
         [StringLength(ShortDescriptionMaxLength, MinimumLength = ShortDescriptionMinLength)]
+        [Display(Name = "Short Description")]
         public string ShortDescription { get; set; } = null!;
 
         [Required]
+        [Display(Name = "Exchange Rate")]
         public decimal ExchangeRate { get; set; }
 
+        [Display(Name = "Date")]
         public DateTime DateTime { get; set; }
     }
 }
