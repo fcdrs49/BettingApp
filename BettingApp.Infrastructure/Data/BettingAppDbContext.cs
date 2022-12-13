@@ -1,11 +1,11 @@
 ﻿using BettingApp.Infrastructure.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace BettingApp.Infrastructure.Data
 {
-    public class BettingAppDbContext : IdentityDbContext
+    public class BettingAppDbContext : IdentityDbContext<User, IdentityRole, string>
     {
         public BettingAppDbContext(DbContextOptions<BettingAppDbContext> options)
             : base(options)

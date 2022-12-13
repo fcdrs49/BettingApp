@@ -37,7 +37,7 @@
 						</div>
 					</a>
 					
-					@if (User.IsInRole("Bookmaker") || User.IsInRole("Administrator"))
+					@if ((User?.IsInRole("Bookmaker") ?? false) || (User?.IsInRole("Administrator") ?? false))
 					{
 						<button class="match-edit">
 							<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game">
@@ -68,6 +68,12 @@
 								<h1 class="score">@Model.HomeGoals : @Model.AwayGoals</h1>
 							</div>
 						}
+						@if(User?.Identity?.IsAuthenticated ?? false)
+						{
+							<a class="game-details" asp-action="Details" asp-controller="Game" asp-route-id="@Model.Id">
+								Details
+							</a>
+						}
 					</div>
 				</div>
 				<div class="column">
@@ -82,7 +88,7 @@
 							<h2 class="team-name"> @Model.AwayTeam.Name</h2>
 						</div>
 					</a>
-					@if(User.IsInRole("Bookmaker") || User.IsInRole("Administrator"))
+					@if((User?.IsInRole("Bookmaker") ?? false) || (User?.IsInRole("Administrator") ?? false))
 					{
 						<button class="match-delete">
 							<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game">

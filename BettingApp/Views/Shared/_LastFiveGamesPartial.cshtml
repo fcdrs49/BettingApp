@@ -1,0 +1,19 @@
+﻿@model IEnumerable<GameViewModel>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title text-center">@ViewData["Team"] - Last 5 games</h5>
+        @foreach (var game in Model)
+        {
+                <a class="card-text text-center" asp-action="Details" asp-controller="Game" asp-route-id="@game.Id">
+                    <div class="row">
+                        <div class="col">
+                            <img src="@game.HomeTeam.ImageUrl" style="width: 20px; height: 20px; display:inline"/> 
+                            @game.HomeTeam.Name @game.HomeGoals:@game.AwayGoals
+                            @game.AwayTeam.Name 
+                            <img src="@game.AwayTeam.ImageUrl" style="width: 20px; height: 20px; display:inline"/>
+                         </div>
+                     </div>
+                </a>
+        }
+    </div>
+</div>

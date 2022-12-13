@@ -2,7 +2,6 @@
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using static BettingApp.Infrastructure.Data.Constants.DataConstants;
 
 namespace BettingApp.Infrastructure.Data.Configuration
 {

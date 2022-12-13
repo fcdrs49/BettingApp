@@ -20,11 +20,11 @@ namespace BettingApp.Controllers
         {   
             if(User.IsInRole(AdminConstants.AdminRoleName))
             {
-                return RedirectToAction("Index", "Home", new { area = AdminConstants.AdminRoleName });
+                return RedirectToAction("Index", "Admin", new { Area = AdminConstants.AdminRoleName });
             }
             if(User.IsInRole(BookmakerConstants.BookmakerRoleName))
             {
-                return RedirectToAction("All", "Games", new { area = BookmakerConstants.BookmakerRoleName });
+                return RedirectToAction("All", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
             }
             var model = await gameService.NextTenGames();
 

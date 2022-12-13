@@ -56,7 +56,10 @@ namespace BettingApp.Controllers
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await gameService.DetailsByIdAsync(id);
+            var model = new GameDetailsModel();
+            model.Game = await gameService.DetailsByIdAsync(id);
+            model.LastFiveHome = await gameService.LastFiveGames(model.Game.HomeTeam.Id);
+            model.LastFiveAway = await gameService.LastFiveGames(model.Game.AwayTeam.Id);
 
             return View(model);
         }

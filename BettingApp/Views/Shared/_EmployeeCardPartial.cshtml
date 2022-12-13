@@ -1,24 +1,21 @@
 ﻿@model EmployeeViewModel
 
-<div class="row text-center">
-    <div class="card">
-        <div class="column">
-            @if (Model.ImageUrl != null)
+<div class="card" style="width: 150px;">
+    @if (Model.ImageUrl != null)
+    {
+        <img class="card-img-top" src="@Model.ImageUrl" style="height: 100px; width:150px"/>
+    }
+    <div class="card-body">
+        <h4 class="card-title">@Model.FirstName @Model.LastName</h4>
+        <p class="card-text text-center">
+            @if (Model.CountryImageUrl != null)
             {
-                <img src="@Model.ImageUrl" />
+                <img src="@Model.CountryImageUrl" />
             }
-        </div>
-        <div class="column">
-            <h2>@Model.FirstName @Model.LastName</h2>
-        </div>
-        <div class="column">
-            <p>
-                @if (Model.CountryImageUrl != null)
-                {
-                    <img src="@Model.CountryImageUrl" />
-                }
-                @Model.Country
-            </p>
-        </div>
+            @Model.Country
+        </p>
+        <p class="card-text text-center">
+            @Model.Position
+        </p>
     </div>
 </div>

@@ -1,7 +1,4 @@
-﻿using BettingApp.Core.Models.Country;
-using BettingApp.Core.Models.Team;
-
-namespace BettingApp.Core.Models.Employee
+﻿namespace BettingApp.Core.Models.Employee
 {
     public class EmployeeViewModel
     {
@@ -20,5 +17,7 @@ namespace BettingApp.Core.Models.Employee
         public int? TeamId { get; set; }
 
         public string? Team { get; set; }
+
+        public string Position { get; set; } = null!;
     }
 }

@@ -4,10 +4,10 @@ using static BettingApp.Areas.Admin.AdminConstants;
 
 namespace BettingApp.Areas.Admin.Controllers
 {
-    [Area(AreaName)]
-    [Authorize(Roles = AdminRoleName)]
-    public class AdminController : Controller
+    public class HomeController : Controller
     {
+        [Area(AreaName)]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Index()
         {
             return View();

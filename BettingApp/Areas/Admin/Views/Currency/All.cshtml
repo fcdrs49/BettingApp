@@ -26,8 +26,8 @@
                 <td><label>@currency.ShortDescription</label></td>
                 <td><label>@currency.ExchangeRate</label></td>
                 <td><label>@currency.DateTime</label></td>
-                <td><a asp-controller="Currency" asp-action="Edit" asp-route-for="@currency.ISOCode" class="btn btn primary">Edit</a></td>
-                <td><a asp-controller="Currency" asp-action="Delete" asp-route-for="@currency.ISOCode" class="btn btn primary">Delete</a></td>
+                <td><a asp-controller="Currency" asp-action="Edit" asp-route-id="@currency.ISOCode" class="btn btn primary">Edit</a></td>
+                <td><a asp-controller="Currency" asp-action="Delete" asp-route-id="@currency.ISOCode" class="btn btn primary">Delete</a></td>
             </tr>
         }
     </tbody>

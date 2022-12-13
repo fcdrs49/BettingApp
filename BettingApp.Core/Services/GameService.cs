@@ -23,7 +23,7 @@ namespace BettingApp.Core.Services
 
         public async Task<GameViewModel> DetailsByIdAsync(int id)
         {
-            return await repo.AllReadonly<Game>()
+            var model = await repo.AllReadonly<Game>()
                 .Where(g => g.Id == id)
                 .Select(g => new GameViewModel()
                 {
@@ -54,7 +54,10 @@ namespace BettingApp.Core.Services
                     AwayGoals = g.AwayTeamGoals
                 })
                 .FirstAsync();
+            
+            return model;
         }
+
 
         public async Task<IEnumerable<GameViewModel>> NextTenGames()
         {
@@ -261,6 +264,36 @@ namespace BettingApp.Core.Services
             result.GamesCount = await games.CountAsync();
 
             return result;
+        }
+
+        public async Task<IEnumerable<GameViewModel>> LastFiveGames(int teamId)
+        {
+            return await repo.AllReadonly<Game>()
+                .Include(g => g.HomeTeam)
+                .Include(g => g.AwayTeam)
+                .Where(g => (g.HomeTeamId == teamId || g.AwayTeamId == teamId) &&
+                            g.DateTime < DateTime.Now)
+                .OrderByDescending(g => g.DateTime)
+                .Take(5)
+                .Select(g => new GameViewModel()
+                {
+                    Id = g.Id,
+                    HomeTeam = new TeamViewModel()
+                    {
+                        Id = g.HomeTeamId,
+                        Name = g.HomeTeam.Name,
+                        ImageUrl = g.HomeTeam.ImageUrl
+                    },
+                    AwayTeam = new TeamViewModel()
+                    {
+                        Id = g.AwayTeamId,
+                        Name = g.AwayTeam.Name,
+                        ImageUrl = g.AwayTeam.ImageUrl
+                    },
+                    HomeGoals = g.HomeTeamGoals,
+                    AwayGoals = g.AwayTeamGoals
+                })
+                .ToListAsync();
         }
     }
 }

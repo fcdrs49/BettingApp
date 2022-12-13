@@ -11,6 +11,7 @@ namespace BettingApp.Core.Contracts
         public Task EditAsync(GameFormModel model);
         public Task CreateAsync(GameFormModel model);
         public Task DeleteAsync(int id);
+        public Task<IEnumerable<GameViewModel>> LastFiveGames(int teamId);
         public Task<GameQueryServiceModel> All(
             string team = "",
             string competition = "",

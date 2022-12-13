@@ -40,7 +40,8 @@ namespace BettingApp.Core.Services
                             FirstName = e.FirstName,
                             LastName = e.LastName,
                             Country = e.Country.Name,
-                            ImageUrl = e.ImageUrl
+                            ImageUrl = e.ImageUrl,
+                            Position = e.EmployeeType.ToString()
                         })
                         .ToList()
                 })
