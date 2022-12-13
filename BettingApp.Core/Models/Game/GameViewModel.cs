@@ -1,6 +1,5 @@
 ﻿using BettingApp.Core.Models.Competition;
 using BettingApp.Core.Models.Team;
-using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Models.Game
 {
@@ -19,6 +18,9 @@ namespace BettingApp.Core.Models.Game
         public decimal DrawRate { get; set; }
 
         public decimal AwayRate { get; set; }
+
+        public int HomeGoals { get; set; }
+        public int AwayGoals { get; set; }
 
         public DateTime Date { get; set; }
     }

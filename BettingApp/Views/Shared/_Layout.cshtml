@@ -25,10 +25,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Game" asp-action="All" asp-route-upcoming="true">Games</a>
                         </li>
-                        @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
+                        @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Administration</a>
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Admin" asp-action="Index">Administration</a>
+                            </li>
+                        }
+                        @if(User.IsInRole("Bookmaker") || User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Team" asp-action="List">Games List</a>
                             </li>
                         }
                     </ul>

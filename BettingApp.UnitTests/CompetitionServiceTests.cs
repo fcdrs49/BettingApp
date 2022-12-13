@@ -26,7 +26,7 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            competitionService = new CompetitionService(repo);
+            //competitionService = new CompetitionService(repo);
         }
 
         [Test]

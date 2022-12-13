@@ -3,8 +3,10 @@ using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Core.Models.Team;
 using BettingApp.Infrastructure.Data.Common;
+using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Services
 {
@@ -123,6 +125,61 @@ namespace BettingApp.Core.Services
 
             await repo.DeleteAsync<Team>(id);
             await repo.SaveChangesAsync();
+        }
+
+        public async Task<List<TeamStandingModel>> StandingsByCompetitionId(int competitionId)
+        {
+            var games = await repo.AllReadonly<Game>()
+                .Where(g => g.CompetitionId == competitionId && g.Finished == true)
+                .ToListAsync();
+
+            var teams = games.Select(g => g.HomeTeamId).Distinct().ToList();
+            teams.AddRange(games.Select(g => g.AwayTeamId).Distinct().ToList());
+            teams = teams.Distinct().ToList();
+
+            List<TeamStandingModel> model = new List<TeamStandingModel>();
+
+            foreach (var teamId in teams)
+            {
+                var team = await repo.GetByIdAsync<Team>(teamId);
+                var wins = games
+                    .Where(g => g.HomeTeamId == teamId && g.Sign == ScoreSign.Home)
+                    .Count();
+                wins += games
+                    .Where(g => g.AwayTeamId == teamId && g.Sign == ScoreSign.Away)
+                    .Count();
+                var draws = games
+                    .Where(g => (g.HomeTeamId == teamId ||
+                                g.AwayTeamId == teamId) &&
+                                g.Sign == ScoreSign.Draw)
+                    .Count();
+                var gamesTotal = games
+                    .Where(g => g.HomeTeamId == teamId || g.AwayTeamId == teamId)
+                    .Count();
+                var goalsFor = games
+                    .Where(g => g.HomeTeamId == teamId)
+                    .Sum(g => g.HomeTeamGoals);
+                var goalsAgainst = games
+                    .Where(g => g.AwayTeamId == teamId)
+                    .Sum(g => g.AwayTeamGoals);
+
+                model.Add(new TeamStandingModel()
+                {
+                    Id = teamId,
+                    Name = team.Name,
+                    Wins = wins,
+                    Draws = draws,
+                    Losses = gamesTotal - wins - draws,
+                    GoalsFor = goalsFor,
+                    GoalsAgainst = goalsAgainst,
+                    Matches = gamesTotal,
+                    Points = (wins * 3) + draws,
+                    ImageUrl = team.ImageUrl
+                });
+            }
+
+            model = model.OrderByDescending(m => m.Points).ToList();
+            return model;
         }
     }
 }

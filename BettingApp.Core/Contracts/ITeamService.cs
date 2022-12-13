@@ -10,5 +10,6 @@ namespace BettingApp.Core.Contracts
 		public Task AddAsync(TeamFormModel model);
 		public Task<IEnumerable<TeamViewModel>> AllAsync();
 		public Task DeleteAsync(int id);
+		public Task<List<TeamStandingModel>> StandingsByCompetitionId(int competitionId);
 	}
 }

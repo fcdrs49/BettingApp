@@ -208,7 +208,6 @@ body {
 	padding-bottom: 12px;
 }
 
-
 .match-bet-option {
 	margin-left: 4px;
 	margin-right: 4px;
@@ -218,6 +217,14 @@ body {
 	color: var(--color-text-secondary);
 	font-size: 14px;
 	font-weight: 600;
+	padding: 4px 8px;
+}
+
+.score {
+	margin-top: 8px;
+	padding-bottom: 12px;
+	margin-left: 4px;
+	margin-right: 4px;
 	padding: 4px 8px;
 }
 

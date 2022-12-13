@@ -67,6 +67,11 @@ app.UseEndpoints(endpoints =>
         name: "Areas",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
+    endpoints.MapControllerRoute(
+        name: "Standings",
+        pattern: "{controller=Competition}/{id}/Standings"
+    );
+
     endpoints.MapDefaultControllerRoute();
     endpoints.MapRazorPages();
 });

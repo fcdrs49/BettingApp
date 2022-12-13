@@ -8,8 +8,6 @@ namespace BettingApp.UnitTests
         private IRepository repo { get; set; }
         private ITransactionService transactionService { get; set; }
         private IBetService betService { get; set; }
-        private ILogger<BetService> betLogger { get; set; }
-        private ILogger<TransactionService> transactionLogger { get; set; }
         private IGuard guard { get; set; }
         private BettingAppDbContext bettingAppDbContext { get; set; }
 
@@ -26,12 +24,8 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            var loggerMock = new Mock<ILogger<BetService>>();
-            betLogger = loggerMock.Object;
-            betService = new BetService(repo, betLogger);
-            var loggerMockTransaction = new Mock<ILogger<TransactionService>>();
-            transactionLogger = loggerMockTransaction.Object;
-            transactionService = new TransactionService(repo, betService, transactionLogger);
+            betService = new BetService(repo);
+            transactionService = new TransactionService(repo, betService);
         }
 
         [Test]

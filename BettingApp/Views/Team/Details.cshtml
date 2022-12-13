@@ -7,7 +7,6 @@
 <div class="row text-center">
   <div class="column">
     @await Html.PartialAsync("../Shared/_TeamCardPartial.cshtml", Model)
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     <div class="text-center">
         <h1>Employees</h1>
         @foreach (var emp in Model.Employees)

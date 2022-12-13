@@ -4,7 +4,6 @@
     public class BetServiceTests
     {
         private IRepository repo { get; set; }
-        private ILogger<BetService> logger { get; set; }
         private IGuard guard { get; set; }
         private IBetService betService { get; set; }
         private BettingAppDbContext bettingAppDbContext { get; set; }
@@ -26,10 +25,8 @@
         [Test]
         public async Task TestCreateBetAsync()
         {
-            var loggerMock = new Mock<ILogger<BetService>>();
-            logger = loggerMock.Object;
             var repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo, logger);
+            betService = new BetService(repo);
 
             List<GameBetViewModel> gameBetModels = new List<GameBetViewModel>();
             gameBetModels.Add(new GameBetViewModel()
@@ -68,10 +65,8 @@
         [Test]
         public async Task TestGetBetsAmount()
         {
-            var loggerMock = new Mock<ILogger<BetService>>();
-            logger = loggerMock.Object;
             var repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo, logger);
+            betService = new BetService(repo);
             await repo.AddAsync(new Bet()
             {
                 Id = 1,
@@ -108,10 +103,8 @@
         [Test]
         public async Task TestGetUserBets()
         {
-            var loggerMock = new Mock<ILogger<BetService>>();
-            logger = loggerMock.Object;
             var repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo, logger);
+            betService = new BetService(repo);
             await repo.AddAsync(new Bet()
             {
                 Id = 1,
@@ -151,9 +144,8 @@
         public async Task TestGetGameBets()
         {
             var loggerMock = new Mock<ILogger<BetService>>();
-            logger = loggerMock.Object;
             var repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo, logger);
+            betService = new BetService(repo);
             await repo.AddAsync(new Bet()
             {
                 Id = 1,

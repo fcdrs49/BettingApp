@@ -92,5 +92,6 @@ namespace BettingApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(All));
         }
+
     }
 }

@@ -4,6 +4,7 @@
     ViewData["Title"] = "All Games";
 }
 
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 <form method="get"> 
     <div class="row"> 
         <div class="form-group col-md-3 d-flex justify-content-between"> 
@@ -15,24 +16,26 @@
                     {
                         <option value="@competition.Name">@competition.Name</option>
                     } 
+                <span asp-validation-for="Competition"></span>
                 </select> 
             </div> 
         </div> 
         <div class="form-group col-md-3"> 
             <label asp-for="TeamTerm"></label>
             <input asp-for="TeamTerm" class="form-control" placeholder="...">
+            <span asp-validation-for="TeamTerm"></span>
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             <label asp-for="Upcoming"></label>
             <br />
             <input id="upcoming" type="checkbox" asp-for="Upcoming" checked="@Model.Upcoming">
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             <label asp-for="Results"></label>
             <br />
             <input id="results" type="checkbox" asp-for="Results" checked="@Model.Results">
         </div>
-        <div class="col-md-3"> 
+        <div class="col-md-2"> 
             <div class="form-group mt-4 p-2"> 
                 <input type="submit" value="Search" class="btn btn-primary" /> 
             </div> 
@@ -50,16 +53,16 @@
 }
 
 <div class="row mb-5"> 
-    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start"> 
-        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Game" asp-action="AllGames" asp-route-currentPage="@previousPage" asp-route-competition="@Model.Competition" asp-route-teamTerm="@Model.TeamTerm" asp-route-upcoming="@Model.Upcoming" asp-route-results="@Model.Results">
+    <div class="col-md-7 d-grid gap-2 d-md-flex justify-content-md-center"> 
+        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Game" asp-action="All" asp-route-currentPage="@previousPage" asp-route-competition="@Model.Competition" asp-route-teamTerm="@Model.TeamTerm" asp-route-upcoming="@Model.Upcoming" asp-route-results="@Model.Results">
             <<
         </a>
     </div> 
     @{
         var shouldButtonBeDisabled = Model.CurrentPage == maxPage || !Model.Games.Any();
     } 
-    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end"> 
-        <a class="btn btn-primary @(shouldButtonBeDisabled ? "disabled" : string.Empty)" asp-controller="Game" asp-action="AllGames" asp-route-currentPage="@(Model.CurrentPage + 1)" asp-route-competition="@Model.Competition" asp-route-teamTerm="@Model.TeamTerm" asp-route-upcoming="@Model.Upcoming" asp-route-results="@Model.Results">
+    <div class="col-md-4 d-grid gap-2 d-md-flex justify-content-md-center"> 
+        <a class="btn btn-primary @(shouldButtonBeDisabled ? "disabled" : string.Empty)" asp-controller="Game" asp-action="All" asp-route-currentPage="@(Model.CurrentPage + 1)" asp-route-competition="@Model.Competition" asp-route-teamTerm="@Model.TeamTerm" asp-route-upcoming="@Model.Upcoming" asp-route-results="@Model.Results">
             >>
         </a> 
     </div> 
@@ -71,39 +74,16 @@
         <h2 class="text-center">No games found by the given criteria!</h2>
     } 
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th><label>Competition</label></th>
-                <th><label>Home Team</label></th>
-                <th><label>Away Team</label></th>
-                <th><label>Home Rate</label></th>
-                <th><label>Draw Rate</label></th>
-                <th><label>Away Rate</label></th>
-                <th><label>Date</label></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var game in Model.Games)
-            {
-                <tr>
-                    <td><label>@game.Competition</label></td>
-                    <td><label>@game.HomeTeam.Name</label></td>
-                    <td><label>@game.AwayTeam.Name</label></td>
-                    <td><label>@game.HomeRate</label></td>
-                    <td><label>@game.DrawRate</label></td>
-                    <td><label>@game.AwayRate</label></td>
-                    <td><label>@game.Date</label></td>
-                    <td><a asp-controller="Game" asp-action="Edit" asp-route-for="@game.Id" class="btn btn primary">Edit</a></td>
-                    <td><a asp-controller="Game" asp-action="Delete" asp-route-for="@game.Id" class="btn btn primary">Delete</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    }
+    <div class="container">
+        @foreach (var game in Model.Games)
+        {
+            @await Html.PartialAsync("../Shared/_GameCardPartial.cshtml", game)
+        }
+        @await Html.PartialAsync("../Shared/_GameBetsPartial.cshtml")
+    </div>
 </div>
 
-<script>
+<script type="text/javascript">
     $(function() {
         $("#upcoming").change(function() {
             if ($(this).is(':checked')) {
@@ -117,3 +97,115 @@
         })
     })
 </script>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.match-bet-option').click(function () {
+            $(this).siblings().removeClass('active');
+            $(this).toggleClass('active');
+            if ($(this).hasClass('active')) {
+                $.ajax({
+                    type: "POST",
+                    url: "/GameBet/Add",
+                    data: { gameId: $(this).attr('data-gameid'), prediction: $(this).attr('data-prediction') },
+                    dataType: "html",
+                    success: function (response) {
+                        $('#betGrid').html(response);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            } else {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/GameBet/Remove",
+                    data: { gameId: $(this).attr('data-gameid') },
+                    dataType: "html",
+                    success: function (response) {
+                        $('#betGrid').html(response);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                })
+            }
+        })
+    })
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/GameBet/GetAll",
+            dataType: "html",
+            success: function (response) {
+                $('#betGrid').html(response);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    })
+
+    function showBets() {
+        $("#betsTable").removeAttr("hidden");
+    }
+    function hideBets() {
+        $("#betsTable").attr("hidden", "hidden");
+    }
+
+    function removeMarker(id) {
+        document.querySelectorAll(`[data-gameid="${id}"]`).forEach(function (el) {
+            el.classList.remove('active');
+        });
+    }
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/GameBet/GetBetsFromSessionStorageRaw",
+            dataType: "html",
+            success: function (response) {
+                response = JSON.parse(response);
+                for (let i = 0; i < response.length; i++) {
+                    let matchId = response[i].GameId;
+                    let prediction = response[i].Prediction;
+                    let elements = document.querySelectorAll(`[data-gameid="${matchId}"]`);
+                    let className = "";
+                    switch (prediction) {
+                        case '1': className = 'home-bet'; break;
+                        case '2': className = 'away-bet'; break;
+                        case 'X': className = 'draw-bet'; break;
+                    }
+                    elements.forEach(function (el) {
+                        if (el.classList.contains(className)) {
+                            el.classList.add('active');
+                        }
+                    })
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    })
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

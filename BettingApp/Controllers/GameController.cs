@@ -3,11 +3,10 @@ using BettingApp.Core.Models.Game;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BettingApp.Areas.Bookmaker.BookmakerConstants;
+using static BettingApp.Areas.Admin.AdminConstants;
 
-namespace BettingApp.Areas.Bookmaker.Controllers
+namespace BettingApp.Controllers
 {
-    [Area(AreaName)]
-    [Authorize(Roles = BookmakerRoleName)]
     public class GameController : Controller
     {
         private readonly IGameService gameService;
@@ -21,6 +20,9 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             competitionService = _competitionService;
         }
 
+        [Area("Bookmaker")]
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
         [HttpGet]
         public async Task<IActionResult> Add()
         {
@@ -36,6 +38,9 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             return View(model);
         }
 
+        [Area("Bookmaker")]
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
         [HttpPost]
         public async Task<IActionResult> Add(GameFormModel model)
         {
@@ -48,6 +53,7 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             return RedirectToAction("Games", "Admin");
         }
 
+        [Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var model = await gameService.DetailsByIdAsync(id);
@@ -55,6 +61,9 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             return View(model);
         }
 
+        [Area("Bookmaker")]
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -63,6 +72,9 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             return View(model);
         }
 
+        [Area("Bookmaker")]
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
         [HttpPost]
         public async Task<IActionResult> Edit(GameFormModel model)
         {
@@ -76,6 +88,8 @@ namespace BettingApp.Areas.Bookmaker.Controllers
             return RedirectToAction(nameof(All));
         }
 
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -85,6 +99,27 @@ namespace BettingApp.Areas.Bookmaker.Controllers
 
         [HttpGet]
         public async Task<IActionResult> All([FromQuery] GameQueryModel query)
+        {
+            var result = await gameService.All(
+                query.TeamTerm,
+                query.Competition,
+                query.CurrentPage,
+                GameQueryModel.GamesPerPage,
+                query.Upcoming,
+                query.Results);
+
+            query.TotalGamesCount = result.GamesCount;
+            query.Games = result.Games;
+            query.Competitions = await competitionService.GetAllAsync();
+
+            return View(query);
+        }
+
+        [Area("Bookmaker")]
+        [Authorize(Roles = BookmakerRoleName)]
+        [Authorize(Roles = AdminRoleName)]
+        [HttpGet]
+        public async Task<IActionResult> List([FromQuery] GameQueryModel query)
         {
             var result = await gameService.All(
                 query.TeamTerm,

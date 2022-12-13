@@ -12,15 +12,12 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly IBetService betService;
-        private readonly ILogger<TransactionService> logger;
 
         public TransactionService(
-            IRepository _repo, IBetService _betService,
-            ILogger<TransactionService> _logger)
+            IRepository _repo, IBetService _betService)
         {
             repo = _repo;
             betService = _betService;
-            logger = _logger;
         }
 
         public async Task AddUserCard(string userId, CreditCardModel model)
@@ -97,7 +94,6 @@ namespace BettingApp.Core.Services
             var balance = transactionsAmount + betsAmount;
             if (model.Amount > balance)
             {
-                logger.LogInformation($"Attempt to withdraw invalid amount! User Id: {userId}, Amount: {model.Amount}, Balance: {balance}");
                 throw new InvalidOperationException("Amount is bigger than balance!");
             }
 

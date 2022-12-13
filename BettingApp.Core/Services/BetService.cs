@@ -13,12 +13,10 @@ namespace BettingApp.Core.Services
     public class BetService : IBetService
     {
         private readonly IRepository repo;
-        private readonly ILogger<BetService> logger;
 
-        public BetService(IRepository _repo, ILogger<BetService> _logger)
+        public BetService(IRepository _repo)
         {
             repo = _repo;
-            logger = _logger;
         }
 
         public async Task CreateBetAsync(BetQueryModel model, string userId)

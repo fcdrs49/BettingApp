@@ -9,10 +9,12 @@ namespace BettingApp.Core.Services
 	public class CompetitionService : ICompetitionService
     {
         private readonly IRepository repo;
+        private readonly ITeamService teamService;
 
-		public CompetitionService(IRepository _repo)
+		public CompetitionService(IRepository _repo, ITeamService _teamService)
 		{
 			repo = _repo;
+			teamService = _teamService;
 		}
 
 		public async Task<IEnumerable<CompetitionViewModel>> GetAllAsync()
@@ -37,6 +39,24 @@ namespace BettingApp.Core.Services
 				Name = competition.Name,
 				ImageUrl = competition.ImageUrl
 			};
+		}
+
+		public async Task<StandingViewModel> Standings(int competitionId)
+		{
+			var competition = await repo.GetByIdAsync<Competition>(competitionId);
+			if(competition == null)
+			{
+				throw new InvalidOperationException("Competition with this id does not exist!");
+			}
+			var model = new StandingViewModel()
+			{
+				CompetitionId = competitionId,
+				Competition = competition.Name,
+				Competitions = await GetAllAsync(),
+				Teams = await teamService.StandingsByCompetitionId(competitionId)
+			};
+
+			return model;
 		}
 	}
 }

@@ -2,13 +2,22 @@
 	<div class="container">
 		<div class="match">
 			<div class="match-header">
-				<div class="match-status">Upcoming</div>
+				
+				@if(Model.Date > DateTime.Now)
+				{
+					<div class="match-status">Upcoming</div>
+				}
+				else
+				{
+					<div class="match-status">Finished</div>
+				}
+				
 				<div class="match-tournament">
 					@if (Model.Competition.ImageUrl != null)
 					{
 						<img src="@Model.Competition.ImageUrl" />
 					}
-				@Model.Competition.Name
+				<a asp-area="" asp-controller="Competition" asp-action="Standings" asp-route-id="@Model.Competition.Id">@Model.Competition.Name</a>
 				</div>
 				<div class="match-actions">
 				
@@ -28,22 +37,37 @@
 						</div>
 					</a>
 					
-					<button class="match-edit">
-					<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game">
-						Edit
-					</a>
-					</button>
+					@if (User.IsInRole("Bookmaker") || User.IsInRole("Administrator"))
+					{
+						<button class="match-edit">
+							<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game">
+								Edit
+							</a>
+						</button>
+					}
 				</div>
 				<div class="column">
 					<div class="match-details">
 						<div class="match-date">
 							@Model.Date
 						</div>
-						<div class="match-bet-options">
-							<button class="match-bet-option home-bet" data-gameid="@Model.Id" data-prediction="1">@Model.HomeRate</button>
-							<button class="match-bet-option draw-bet" data-gameid="@Model.Id" data-prediction="X"> @Model.DrawRate</button>
-							<button class="match-bet-option away-bet" data-gameid="@Model.Id" data-prediction="2">@Model.AwayRate</button>
-						</div>
+						@if (Model.Date > DateTime.Now)
+						{
+							@if(User?.Identity?.IsAuthenticated ?? false)
+							{
+								<div class="match-bet-options">
+									<button class="match-bet-option home-bet" data-gameid="@Model.Id" data-prediction="1">@Model.HomeRate</button>
+									<button class="match-bet-option draw-bet" data-gameid="@Model.Id" data-prediction="X"> @Model.DrawRate</button>
+									<button class="match-bet-option away-bet" data-gameid="@Model.Id" data-prediction="2">@Model.AwayRate</button>
+								</div>
+							}
+						}
+						else
+						{
+							<div class="match-result">
+								<h1 class="score">@Model.HomeGoals : @Model.AwayGoals</h1>
+							</div>
+						}
 					</div>
 				</div>
 				<div class="column">
@@ -58,11 +82,14 @@
 							<h2 class="team-name"> @Model.AwayTeam.Name</h2>
 						</div>
 					</a>
-					<button class="match-delete">
-						<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game">
-							Delete
-						</a>
-					</button>
+					@if(User.IsInRole("Bookmaker") || User.IsInRole("Administrator"))
+					{
+						<button class="match-delete">
+							<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game">
+								Delete
+							</a>
+						</button>
+					}
 				</div>
 			</div>
 		</div>

@@ -49,7 +49,9 @@ namespace BettingApp.Core.Services
                         Name = g.Competition.Name,
                         ImageUrl = g.Competition.ImageUrl
                     },
-                    Date = g.DateTime
+                    Date = g.DateTime,
+                    HomeGoals = g.HomeTeamGoals,
+                    AwayGoals = g.AwayTeamGoals
                 })
                 .FirstAsync();
         }
@@ -83,7 +85,9 @@ namespace BettingApp.Core.Services
                         Name = g.Competition.Name,
                         ImageUrl = g.Competition.ImageUrl
                     },
-                    Date = g.DateTime
+                    Date = g.DateTime,
+                    HomeGoals = g.HomeTeamGoals,
+                    AwayGoals = g.AwayTeamGoals
                 })
                 .Take(10)
                 .ToListAsync();
@@ -248,7 +252,9 @@ namespace BettingApp.Core.Services
                     Date = g.DateTime,
                     HomeRate = g.HomeRate,
                     DrawRate = g.DrawRate,
-                    AwayRate = g.AwayRate
+                    AwayRate = g.AwayRate,
+                    HomeGoals = g.HomeTeamGoals,
+                    AwayGoals = g.AwayTeamGoals
                 })
                 .ToListAsync();
 
