@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Models.Bet;
+using BettingApp.Core.Models.Game;
 using BettingApp.Core.Models.GameBet;
 
 namespace BettingApp.Core.Contracts
@@ -9,5 +10,7 @@ namespace BettingApp.Core.Contracts
         public decimal GetBetsAmount(string userId);
         public Task<IEnumerable<BetViewModel>> GetUserBets(string userId);
         public Task<IEnumerable<GameBetViewModel>> GetGameBets(int betId);
+        public Task UpdateBetsWhenGameFinished(GameFormModel game);
+        public Task UpdateBetsWhenGameCorrected(GameFormModel game);
     }
 }

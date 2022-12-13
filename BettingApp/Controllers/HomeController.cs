@@ -18,15 +18,15 @@ namespace BettingApp.Controllers
 
         public async Task<IActionResult> Index()
         {   
-            if(User.IsInRole(AdminConstants.AdminRoleName))
-            {
-                return RedirectToAction("Index", "Admin", new { Area = AdminConstants.AdminRoleName });
-            }
-            if(User.IsInRole(BookmakerConstants.BookmakerRoleName))
-            {
-                return RedirectToAction("All", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
-            }
-            var model = await gameService.NextTenGames();
+            //if(User.IsInRole(AdminConstants.AdminRoleName))
+            //{
+            //    return RedirectToAction("Index", "Admin", new { Area = AdminConstants.AdminRoleName });
+            //}
+            //if(User.IsInRole(BookmakerConstants.BookmakerRoleName))
+            //{
+            //    return RedirectToAction("All", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
+            //}
+            var model = await gameService.NextNGames(10 ,0);
 
             return View(model);
         }

@@ -13,12 +13,18 @@ namespace BettingApp.Core.Services
         private readonly IRepository repo;
         private readonly ICompetitionService competitionService;
         private readonly ITeamService teamService;
+        private readonly IBetService betService;
 
-        public GameService(IRepository _repo, ICompetitionService _competitionService, ITeamService _teamService)
+        public GameService(
+            IRepository _repo, 
+            ICompetitionService _competitionService, 
+            ITeamService _teamService,
+            IBetService _betService)
         {
             repo = _repo;
             competitionService = _competitionService;
             teamService = _teamService;
+            betService = _betService;
         }
 
         public async Task<GameViewModel> DetailsByIdAsync(int id)
@@ -59,10 +65,18 @@ namespace BettingApp.Core.Services
         }
 
 
-        public async Task<IEnumerable<GameViewModel>> NextTenGames()
+        public async Task<IEnumerable<GameViewModel>> NextNGames(int count, int teamId = 0)
         {
-            return await repo.AllReadonly<Game>()
-                .Where(g => g.DateTime > DateTime.Now)
+            var games = repo.AllReadonly<Game>();
+
+            if(teamId > 0)
+            {
+                games = games.Where(g => g.HomeTeamId == teamId || g.AwayTeamId == teamId);
+            }
+
+            games = games.Where(g => g.DateTime > DateTime.Now);
+
+            return await games
                 .OrderBy(g => g.DateTime)
                 .Select(g => new GameViewModel()
                 {
@@ -145,6 +159,15 @@ namespace BettingApp.Core.Services
         public async Task EditAsync(GameFormModel model)
         {
             var game = await repo.GetByIdAsync<Game>(model.Id);
+
+            if(model.Finished && !game.Finished)
+            {
+                await betService.UpdateBetsWhenGameFinished(model);
+            }
+            else if (!model.Finished && game.Finished)
+            {
+                await betService.UpdateBetsWhenGameCorrected(model);
+            }
 
             game.AwayRate = model.AwayRate;
             game.AwayTeamId = model.AwayTeamId;
@@ -266,13 +289,19 @@ namespace BettingApp.Core.Services
             return result;
         }
 
-        public async Task<IEnumerable<GameViewModel>> LastFiveGames(int teamId)
+        public async Task<IEnumerable<GameViewModel>> LastNGames(int count, int teamId)
         {
-            return await repo.AllReadonly<Game>()
+            var games = repo.AllReadonly<Game>();
+            if(teamId != 0)
+            {
+                games = games.Where(g => g.HomeTeamId == teamId || g.AwayTeamId == teamId);
+            }
+
+            games = games.Where(g => g.DateTime < DateTime.Now);
+
+            return await games
                 .Include(g => g.HomeTeam)
                 .Include(g => g.AwayTeam)
-                .Where(g => (g.HomeTeamId == teamId || g.AwayTeamId == teamId) &&
-                            g.DateTime < DateTime.Now)
                 .OrderByDescending(g => g.DateTime)
                 .Take(5)
                 .Select(g => new GameViewModel()

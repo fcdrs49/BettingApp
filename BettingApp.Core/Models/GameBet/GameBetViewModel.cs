@@ -11,5 +11,7 @@
         public string Prediction { get; set; } = null!;
 
         public decimal BetRate { get; set; }
+
+        public bool Won { get; set; }
     }
 }

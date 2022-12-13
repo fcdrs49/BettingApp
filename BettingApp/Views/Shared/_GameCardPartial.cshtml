@@ -40,7 +40,7 @@
 					@if ((User?.IsInRole("Bookmaker") ?? false) || (User?.IsInRole("Administrator") ?? false))
 					{
 						<button class="match-edit">
-							<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game">
+							<a asp-action="Edit" asp-route-id="@Model.Id" asp-controller="Game" asp-area="Bookmaker">
 								Edit
 							</a>
 						</button>
@@ -91,7 +91,7 @@
 					@if((User?.IsInRole("Bookmaker") ?? false) || (User?.IsInRole("Administrator") ?? false))
 					{
 						<button class="match-delete">
-							<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game">
+							<a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Game" asp-area="Bookmaker">
 								Delete
 							</a>
 						</button>

@@ -1,5 +1,6 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Bet;
+using BettingApp.Core.Models.Game;
 using BettingApp.Core.Models.GameBet;
 using BettingApp.Infrastructure.Data;
 using BettingApp.Infrastructure.Data.Common;
@@ -7,6 +8,7 @@ using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Services
 {
@@ -114,6 +116,70 @@ namespace BettingApp.Core.Services
                     Prediction = b.Prediction.ToString()
                 })
                 .ToListAsync();
+        }
+
+        public async Task UpdateBetsWhenGameFinished(GameFormModel game)
+        {
+            var lostBets = await repo.AllReadonly<GameBet>()
+                .Where(gb => gb.GameId == game.Id &&
+                       gb.Prediction != game.ScoreSign)
+                .ToListAsync();
+            foreach (var lostBet in lostBets)
+            {
+                lostBet.Won = false;
+                var bet = await repo.GetByIdAsync<Bet>(lostBet.BetId);
+                if (!bet.Closed && !bet.Cancelled)
+                {
+                    bet.Closed = true;
+                }
+            }
+
+            var wonBets = await repo.AllReadonly<GameBet>()
+                .Where(gb => gb.GameId == game.Id &&
+                        gb.Prediction == game.ScoreSign)
+                .ToListAsync();
+            foreach (var wonBet in wonBets)
+            {
+                wonBet.Won = true;
+                var gameBets = await repo.AllReadonly<GameBet>()
+                    .Where(b => b.BetId == wonBet.BetId &&
+                           b.GameId != wonBet.GameId)
+                    .ToListAsync();
+
+                if (!gameBets.Any(g => g.Won == false))
+                {
+                    var betRate = gameBets.Select(gb => gb.BetRate).Aggregate((a, b) => a * b) * wonBet.BetRate;
+                    var bet = await repo.GetByIdAsync<Bet>(wonBet.BetId);
+                    if (!bet.Cancelled)
+                    {
+                        bet.Won = true;
+                        bet.Closed = true;
+                        bet.WinAmount = betRate * bet.Amount;
+                    }
+                }
+            }
+
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task UpdateBetsWhenGameCorrected(GameFormModel game)
+        {
+            var gameBets = await repo.AllReadonly<GameBet>()
+                .Where(gb => gb.BetId == game.Id)
+                .ToListAsync();
+
+            foreach (var gameBet in gameBets)
+            {
+                gameBet.Won = false;
+                var bet = await repo.GetByIdAsync<Bet>(gameBet.BetId);
+                if(!bet.Cancelled && bet.Closed)
+                {
+                    bet.Won = false;
+                    bet.Closed = false;
+                }
+            }
+
+            await repo.SaveChangesAsync();
         }
     }
 }

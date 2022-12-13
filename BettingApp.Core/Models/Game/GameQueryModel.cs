@@ -7,6 +7,8 @@ namespace BettingApp.Core.Models.Game
     {
         public const int GamesPerPage = 10;
 
+        public const int GameListPerPage = 20;
+
         [Display(Name = "Search by Team")]
         public string? TeamTerm { get; set; } = "";
 

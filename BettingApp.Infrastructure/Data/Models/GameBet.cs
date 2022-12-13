@@ -21,5 +21,7 @@ namespace BettingApp.Infrastructure.Data.Models
         public decimal BetRate { get; set; }
 
         public ScoreSign Prediction { get; set; }
+
+        public bool Won { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using BettingApp.Areas.Bookmaker;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -108,8 +109,22 @@ namespace BettingApp.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)   
+                if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    if (user != null)
+                    {
+                        if (await _userManager.IsInRoleAsync(user, "Administrator"))
+                        {
+                            return RedirectToAction("Index", "Admin", new { Area = "Admin" });
+                        }
+                        else if(await _userManager.IsInRoleAsync(user, "Bookmaker"))
+                        {
+                            return RedirectToAction("All", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
+                        }
+                    }
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

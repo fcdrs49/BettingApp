@@ -10,6 +10,7 @@ namespace BettingApp.UnitTests
         private ITeamService teamService { get; set; }
         private IGameService gameService { get; set; }
         private ICountryService countryService { get; set; }
+        private IBetService betService { get; set; }
         private IGuard guard { get; set; }
         private BettingAppDbContext bettingAppDbContext { get; set; }
 
@@ -29,7 +30,7 @@ namespace BettingApp.UnitTests
             countryService = new CountryService(repo);
             teamService = new TeamService(repo, countryService, guard);
             competitionService = new CompetitionService(repo, teamService);
-            gameService = new GameService(repo, competitionService, teamService);
+            gameService = new GameService(repo, competitionService, teamService, betService);
         }
 
         [Test]
@@ -141,7 +142,7 @@ namespace BettingApp.UnitTests
             await repo.AddAsync(lastGame);
             await repo.SaveChangesAsync();
 
-            var games = await gameService.NextTenGames();
+            var games = await gameService.NextNGames(10, 0);
             Assert.Multiple(() =>
             {
                 Assert.That(games.Count(), Is.EqualTo(10));
