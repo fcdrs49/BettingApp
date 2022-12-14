@@ -8,11 +8,19 @@
                 <div class="row">
                     <div class="col">
                         <img src="@game.HomeTeam.ImageUrl" style="width: 20px; height: 20px; display:inline"/> 
-                        @game.HomeTeam.Name @game.HomeGoals:@game.AwayGoals
+                        @game.HomeTeam.Name 
+                        @if (game.Date < DateTime.Now)
+                        { 
+                            @Html.Raw($"{@game.HomeGoals}:{@game.AwayGoals}")
+                        }
+                        else
+                        {
+                            @Html.Raw("-")
+                        }
                         @game.AwayTeam.Name 
                         <img src="@game.AwayTeam.ImageUrl" style="width: 20px; height: 20px; display:inline"/>
-                        </div>
                     </div>
+                </div>
             </a>
         }
     </div>

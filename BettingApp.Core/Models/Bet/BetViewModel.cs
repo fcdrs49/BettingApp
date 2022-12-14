@@ -1,5 +1,4 @@
-﻿using BettingApp.Core.Models.GameBet;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BettingApp.Core.Models.Bet
 {
@@ -27,5 +26,7 @@ namespace BettingApp.Core.Models.Bet
         public int GamesCount { get; set; }
 
         public string Won { get; set; } = null!;
+
+        public bool CanBeClosed { get; set; }
     }
 }

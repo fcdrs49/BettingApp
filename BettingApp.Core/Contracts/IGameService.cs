@@ -13,11 +13,11 @@ namespace BettingApp.Core.Contracts
         public Task DeleteAsync(int id);
         public Task<IEnumerable<GameViewModel>> LastNGames(int count, int teamId);
         public Task<GameQueryServiceModel> All(
+            bool upcoming,
+            bool results,
             string team = "",
             string competition = "",
             int currentPage = 1,
-            int gamesPerPage = 20,
-            bool upcoming = false,
-            bool results = false);
+            int gamesPerPage = 20);
     }
 }

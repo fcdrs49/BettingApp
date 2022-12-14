@@ -99,12 +99,12 @@ namespace BettingApp.Controllers
         public async Task<IActionResult> All([FromQuery] GameQueryModel query)
         {
             var result = await gameService.All(
+                query.Upcoming,
+                query.Results,
                 query.TeamTerm,
                 query.Competition,
                 query.CurrentPage,
-                GameQueryModel.GamesPerPage,
-                query.Upcoming,
-                query.Results);
+                GameQueryModel.GamesPerPage);
 
             query.TotalGamesCount = result.GamesCount;
             query.Games = result.Games;
@@ -119,12 +119,12 @@ namespace BettingApp.Controllers
         public async Task<IActionResult> List([FromQuery] GameQueryModel query)
         {
             var result = await gameService.All(
+                query.Upcoming,
+                query.Results,
                 query.TeamTerm,
                 query.Competition,
                 query.CurrentPage,
-                GameQueryModel.GamesPerPage,
-                query.Upcoming,
-                query.Results);
+                GameQueryModel.GamesPerPage);
 
             query.TotalGamesCount = result.GamesCount;
             query.Games = result.Games;

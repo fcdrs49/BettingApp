@@ -9,6 +9,7 @@ using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
 
 namespace BettingApp.Core.Services
 {
@@ -89,11 +90,15 @@ namespace BettingApp.Core.Services
             {
                 var gameBets = await repo.AllReadonly<GameBet>()
                     .Where(gb => gb.BetId == bet.Id)
+                    .Include(gb => gb.Game)
                     .ToListAsync();
                 bet.GamesCount = gameBets.Count;
                 var betRates = gameBets.Select(gb => gb.BetRate).ToList();
                 bet.BetRate = betRates.Aggregate((a, b) => a * b);
                 bet.Won = await IsBetWon(bet.Id);
+                bet.CanBeClosed = !bet.Closed &&
+                    !gameBets.Any(gb => gb.Game.Finished == true) &&
+                    !gameBets.Any(gb => gb.Game.DateTime < DateTime.Now);
             }
 
             return bets;
@@ -208,6 +213,16 @@ namespace BettingApp.Core.Services
             }
 
             return "";
+        }
+
+        private async Task CancelBet(int betId)
+        {
+            var bet = await repo.GetByIdAsync<Bet>(betId);
+            bet.Cancelled = true;
+            bet.Won = true;
+            bet.WinAmount = bet.Amount;
+            repo.Update(bet);
+            await repo.SaveChangesAsync();
         }
     }
 }
