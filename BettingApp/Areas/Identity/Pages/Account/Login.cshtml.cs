@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using BettingApp.Areas.Admin;
 using BettingApp.Areas.Bookmaker;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -121,7 +122,7 @@ namespace BettingApp.Areas.Identity.Pages.Account
                         }
                         else if(await _userManager.IsInRoleAsync(user, "Bookmaker"))
                         {
-                            return RedirectToAction("All", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
+                            return RedirectToAction("List", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
                         }
                     }
 
