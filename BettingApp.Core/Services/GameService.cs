@@ -65,7 +65,7 @@ namespace BettingApp.Core.Services
         }
 
 
-        public async Task<IEnumerable<GameViewModel>> NextNGames(int count, int teamId = 0)
+        public async Task<IEnumerable<GameViewModel>> NextNGames(int count, int teamId)
         {
             var games = repo.AllReadonly<Game>();
 
@@ -321,7 +321,8 @@ namespace BettingApp.Core.Services
                         ImageUrl = g.AwayTeam.ImageUrl
                     },
                     HomeGoals = g.HomeTeamGoals,
-                    AwayGoals = g.AwayTeamGoals
+                    AwayGoals = g.AwayTeamGoals,
+                    Date = g.DateTime
                 })
                 .ToListAsync();
         }

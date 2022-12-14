@@ -12,5 +12,6 @@ namespace BettingApp.Core.Contracts
         public Task<IEnumerable<GameBetViewModel>> GetGameBets(int betId);
         public Task UpdateBetsWhenGameFinished(GameFormModel game);
         public Task UpdateBetsWhenGameCorrected(GameFormModel game);
+        public Task CancelBet(int betId);
     }
 }

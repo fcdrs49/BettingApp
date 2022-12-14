@@ -72,10 +72,15 @@ else
                             @bet.Won
                         </td>
                         <td>
-                            <a id="@bet.Id" class="Details" href="javascript:;">Details</a>
+                            <a id="@bet.Id" class="Details btn btn-primary" href="javascript:;">Details</a>
                         </td>
                         <td>
-                            
+                            @if(bet.CanBeClosed)
+                            {
+                                <form asp-action="Cancel" asp-controller="Bet" asp-area="" asp-route-id="@bet.Id">
+                                    <button type="submit" asp-action="Cancel" asp-controller="Bet" asp-area="" asp-route-id="@bet.Id" class="btn btn-primary">Cancel</button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }

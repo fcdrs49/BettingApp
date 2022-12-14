@@ -12,6 +12,9 @@ namespace BettingApp.UnitTests
     {
         private IRepository repo { get; set; }
         private ICompetitionService competitionService { get; set; }
+        private ITeamService teamService { get; set; }
+        private ICountryService countryService { get; set; }
+        private IGuard guard { get; set; }
         private BettingAppDbContext bettingAppDbContext { get; set; }
 
         [SetUp]
@@ -26,7 +29,10 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            //competitionService = new CompetitionService(repo);
+            countryService = new CountryService(repo);
+            guard = new Guard();
+            teamService = new TeamService(repo, countryService, guard);
+            competitionService = new CompetitionService(repo, teamService);
         }
 
         [Test]

@@ -39,6 +39,8 @@ namespace BettingApp.Controllers
 
             await betService.CreateBetAsync(model, User.Id());
 
+            ClearBetsFromSessionStorage();
+
             return RedirectToAction("UserBets", "User");
         }
         public async Task<List<GameBetViewModel>> GetBetsFromSessionStorage()
@@ -61,10 +63,23 @@ namespace BettingApp.Controllers
             return gameBets;
         }
 
+        public void ClearBetsFromSessionStorage()
+        {
+            HttpContext.Session.Remove("GameBets");
+        }
+
         [HttpGet]
         public async Task<ActionResult> GetBetDetails(int betId)
         {
             return PartialView("_BetDetailsPartial", await betService.GetGameBets(betId));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            await betService.CancelBet(id);
+
+            return RedirectToAction("UserBets", "User");
         }
     }
 }

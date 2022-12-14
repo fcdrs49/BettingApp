@@ -188,6 +188,7 @@ namespace BettingApp.Core.Services
                 {
                     bet.Won = false;
                     bet.Closed = false;
+                    bet.WinAmount = 0;
                     repo.Update(gameBet);
                 }
             }
@@ -215,10 +216,11 @@ namespace BettingApp.Core.Services
             return "";
         }
 
-        private async Task CancelBet(int betId)
+        public async Task CancelBet(int betId)
         {
             var bet = await repo.GetByIdAsync<Bet>(betId);
             bet.Cancelled = true;
+            bet.Closed = true;
             bet.Won = true;
             bet.WinAmount = bet.Amount;
             repo.Update(bet);

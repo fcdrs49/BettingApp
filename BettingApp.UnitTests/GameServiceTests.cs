@@ -1,5 +1,7 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace BettingApp.UnitTests
 {
     [TestFixture]
@@ -30,6 +32,7 @@ namespace BettingApp.UnitTests
             countryService = new CountryService(repo);
             teamService = new TeamService(repo, countryService, guard);
             competitionService = new CompetitionService(repo, teamService);
+            betService = new BetService(repo);
             gameService = new GameService(repo, competitionService, teamService, betService);
         }
 
@@ -90,8 +93,9 @@ namespace BettingApp.UnitTests
         }
 
         [Test]
-        public async Task TestNextTenGames()
+        public async Task TestNextNGames()
         {
+            var date = DateTime.Now;
             for (int i = 0; i < 10; i++)
             {
                 await repo.AddAsync(new Game()
@@ -102,11 +106,11 @@ namespace BettingApp.UnitTests
                     AwayTeamId = i,
                     DrawRate = 1,
                     Finished = false,
-                    HomeTeamId = i+1,
+                    HomeTeamId = 1,
                     Sign = ScoreSign.Draw,
                     HomeRate = 1,
                     HomeTeamGoals = 0,
-                    DateTime = DateTime.Now.AddHours(i)
+                    DateTime = date.AddSeconds(i*2)
                 });
             }
             var firstGame = new Game()
@@ -117,11 +121,11 @@ namespace BettingApp.UnitTests
                 AwayTeamId = 11,
                 DrawRate = 1,
                 Finished = false,
-                HomeTeamId = 12,
+                HomeTeamId = 1,
                 Sign = ScoreSign.Draw,
                 HomeRate = 1,
                 HomeTeamGoals = 0,
-                DateTime = DateTime.Now.AddMinutes(30)
+                DateTime = date.AddSeconds(1)
             }; 
             var lastGame = new Game()
             {
@@ -131,18 +135,18 @@ namespace BettingApp.UnitTests
                 AwayTeamId = 12,
                 DrawRate = 1,
                 Finished = false,
-                HomeTeamId = 13,
+                HomeTeamId = 1,
                 Sign = ScoreSign.Draw,
                 HomeRate = 1,
                 HomeTeamGoals = 0,
-                DateTime = DateTime.Now.AddHours(8.5)
+                DateTime = date.AddSeconds(17)
             };
 
             await repo.AddAsync(firstGame);
             await repo.AddAsync(lastGame);
             await repo.SaveChangesAsync();
 
-            var games = await gameService.NextNGames(10, 0);
+            var games = await gameService.NextNGames(10, 1);
             Assert.Multiple(() =>
             {
                 Assert.That(games.Count(), Is.EqualTo(10));
@@ -301,6 +305,153 @@ namespace BettingApp.UnitTests
             await gameService.DeleteAsync(2);
             var actualGame = await repo.GetByIdAsync<Game>(2);
             Assert.That(actualGame, Is.Null);
+        }
+
+        [Test]
+        public async Task TestLastNGames()
+        {
+            var date = DateTime.Now.AddSeconds(-10);
+            for (int i = 1; i <= 10; i++)
+            {
+                await repo.AddAsync(new Game()
+                {
+                    CompetitionId = 1,
+                    AwayRate = 1,
+                    AwayTeamGoals = 0,
+                    AwayTeamId = i,
+                    DrawRate = 1,
+                    Finished = true,
+                    HomeTeamId = 1,
+                    Sign = ScoreSign.Draw,
+                    HomeRate = 1,
+                    HomeTeamGoals = 0,
+                    DateTime = date.AddSeconds(-i*2)
+                });
+            }
+            var firstGame = new Game()
+            {
+                CompetitionId = 1,
+                AwayRate = 1,
+                AwayTeamGoals = 0,
+                AwayTeamId = 1,
+                DrawRate = 1,
+                Finished = true,
+                HomeTeamId = 11,
+                Sign = ScoreSign.Draw,
+                HomeRate = 1,
+                HomeTeamGoals = 0,
+                DateTime = date.AddSeconds(-1)
+            };
+            var lastGame = new Game()
+            {
+                CompetitionId = 1,
+                AwayRate = 1,
+                AwayTeamGoals = 0,
+                AwayTeamId = 12,
+                DrawRate = 1,
+                Finished = true,
+                HomeTeamId = 1,
+                Sign = ScoreSign.Draw,
+                HomeRate = 1,
+                HomeTeamGoals = 0,
+                DateTime = date.AddSeconds(-17)
+            };
+
+            await repo.AddAsync(lastGame);
+            await repo.AddAsync(firstGame);
+            await repo.SaveChangesAsync();
+
+            var games = await gameService.LastNGames(10, 1);
+            Assert.Multiple(() =>
+            {
+                Assert.That(games.Count(), Is.EqualTo(10));
+                Assert.That(games.FirstOrDefault()?.Date, Is.EqualTo(firstGame.DateTime));
+                Assert.That(games.LastOrDefault()?.Date, Is.EqualTo(lastGame.DateTime));
+            });
+        }
+
+        [Test]
+        public async Task TestAll()
+        {
+            var team = await repo.AllReadonly<Team>()
+                .Where(t => t.Name == "Arsenal")
+                .FirstAsync();
+
+            var gamesToDelete = await repo.All<Game>()
+                .ToListAsync();
+            repo.DeleteRange(gamesToDelete);
+            await repo.SaveChangesAsync();
+
+            var games = await gameService.All(true, false, "Arsenal", "");
+            Assert.That(games.GamesCount, Is.EqualTo(0));
+
+            for (int i = 0; i < 5; i++)
+            {
+                var game = new Game()
+                {
+                    AwayRate = 1,
+                    HomeRate = 1,
+                    DrawRate = 1,
+                    AwayTeamId = team.Id,
+                    HomeTeamId = 2,
+                    DateTime = DateTime.Now.AddSeconds(i + 10),
+                    CompetitionId = 1,
+                    Finished = false,
+                    Sign = ScoreSign.Home
+                };
+
+                await repo.AddAsync(game);
+            }
+            await repo.SaveChangesAsync();
+            games = await gameService.All(true, false, "Arsenal");
+            Assert.Multiple(() =>
+            {
+                Assert.That(games.GamesCount, Is.EqualTo(5));
+                Assert.That(games.Games.All(g => g.AwayTeam.Name == "Arsenal"));
+                Assert.That(games.Games.All(g => g.Date > DateTime.Now));
+            });
+            for (int i = 0; i < 10; i++)
+            {
+                var game = new Game()
+                {
+                    AwayRate = 1,
+                    HomeRate = 1,
+                    DrawRate = 1,
+                    AwayTeamId = team.Id + i,
+                    HomeTeamId = 2,
+                    DateTime = DateTime.Now.AddSeconds(i + 10),
+                    CompetitionId = 1,
+                    Finished = false,
+                    Sign = ScoreSign.Home
+                };
+                await repo.AddAsync(game);
+            }
+            await repo.SaveChangesAsync();
+            games = await gameService.All(true, false);
+            Assert.Multiple(() =>
+            {
+                Assert.That(games.GamesCount, Is.EqualTo(15));
+            });
+            games = await gameService.All(true, false, "Arsenal", "", 1, 5);
+            for (int i = 1; i <= 5; i++)
+            {
+                var game = new Game()
+                {
+                    AwayRate = 1,
+                    HomeRate = 1,
+                    DrawRate = 1,
+                    AwayTeamId = team.Id,
+                    HomeTeamId = 2,
+                    DateTime = DateTime.Now.AddSeconds(i - (i*5)),
+                    CompetitionId = 1,
+                    Finished = true,
+                    Sign = ScoreSign.Home
+                };
+                await repo.AddAsync(game);
+            }
+            await repo.SaveChangesAsync();
+            games = await gameService.All(false, true, "", "", 1, 100);
+            Assert.That(games.GamesCount, Is.EqualTo(5));
         }
     }
 }
