@@ -1,4 +1,6 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Competition;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Models;
@@ -10,11 +12,13 @@ namespace BettingApp.Core.Services
     {
         private readonly IRepository repo;
         private readonly ITeamService teamService;
+        private readonly IGuard guard;
 
-		public CompetitionService(IRepository _repo, ITeamService _teamService)
+		public CompetitionService(IRepository _repo, ITeamService _teamService, IGuard _guard)
 		{
 			repo = _repo;
 			teamService = _teamService;
+			guard = _guard;
 		}
 
 		public async Task<IEnumerable<CompetitionViewModel>> GetAllAsync()
@@ -32,8 +36,9 @@ namespace BettingApp.Core.Services
 		public async Task<CompetitionViewModel> GetByIdAsync(int id)
 		{
 			var competition = await repo.GetByIdAsync<Competition>(id);
+            guard.AgainstNull(competition, string.Format(ExceptionMessages.NotFound, nameof(Competition), id));
 
-			return new CompetitionViewModel()
+            return new CompetitionViewModel()
 			{
 				Id = competition.Id,
 				Name = competition.Name,
@@ -44,11 +49,8 @@ namespace BettingApp.Core.Services
 		public async Task<StandingViewModel> Standings(int competitionId)
 		{
 			var competition = await repo.GetByIdAsync<Competition>(competitionId);
-			if(competition == null)
-			{
-				throw new InvalidOperationException("Competition with this id does not exist!");
-			}
-			var model = new StandingViewModel()
+            guard.AgainstNull(competition, string.Format(ExceptionMessages.NotFound, nameof(Competition), competitionId));
+            var model = new StandingViewModel()
 			{
 				CompetitionId = competitionId,
 				Competition = competition.Name,

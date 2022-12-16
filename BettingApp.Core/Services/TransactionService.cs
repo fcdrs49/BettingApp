@@ -1,4 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Transaction;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
@@ -14,7 +15,8 @@ namespace BettingApp.Core.Services
         private readonly IBetService betService;
 
         public TransactionService(
-            IRepository _repo, IBetService _betService)
+            IRepository _repo, 
+            IBetService _betService)
         {
             repo = _repo;
             betService = _betService;

@@ -1,4 +1,5 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
 using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Core.Models.Team;
@@ -46,7 +47,7 @@ namespace BettingApp.Core.Services
                 })
                 .FirstOrDefaultAsync();
 
-            guard.AgainstNull(team, "Team can not be found!");
+            guard.AgainstNull(team, string.Format(ExceptionMessages.NotFound, nameof(Team), id));
             return team;
         }
 
@@ -62,7 +63,7 @@ namespace BettingApp.Core.Services
                     ImageUrl = t.ImageUrl
                 })
                 .FirstOrDefaultAsync();
-            guard.AgainstNull(team, "Team can not be found!");
+            guard.AgainstNull(team, string.Format(ExceptionMessages.NotFound, nameof(Team), id));
             team.Countries = await countryService.AllAsync();
 
             return team;
@@ -70,21 +71,17 @@ namespace BettingApp.Core.Services
 
         public async Task EditAsync(TeamFormModel model)
         {
-            var team = await repo.All<Team>()
-                .Where(t => t.Id == model.Id)
-                .FirstOrDefaultAsync();
+            var team = await repo.GetByIdAsync<Team>(model.Id);
+            guard.AgainstNull(team, string.Format(ExceptionMessages.NotFound, nameof(Team), model.Id));
 
-            if(team != null)
-            {
-                team.Name = model.Name;
-                team.CountryId = model.CountryId;
-                team.ImageUrl = model.ImageUrl;
-                team.CountryId = model.CountryId;
-                team.IsInternational = model.IsInternational;
+            team.Name = model.Name;
+            team.CountryId = model.CountryId;
+            team.ImageUrl = model.ImageUrl;
+            team.CountryId = model.CountryId;
+            team.IsInternational = model.IsInternational;
 
-                repo.Update(team);
-                await repo.SaveChangesAsync();
-            }
+            repo.Update(team);
+            await repo.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TeamViewModel>> AllAsync()
@@ -117,10 +114,16 @@ namespace BettingApp.Core.Services
 
         public async Task DeleteAsync(int id)
         {
+            var team = await ByIdAsync(id);
+
             if(await repo.AllReadonly<Game>()
                 .AnyAsync(g => g.HomeTeamId == id || g.AwayTeamId == id))
             {
-                throw new InvalidOperationException("Cannot delete team when it participates in games!");
+                throw new InvalidOperationException(
+                    string.Format(ExceptionMessages.EntityExistsMessageOnDelete,
+                                  nameof(Team),
+                                  team.Name,
+                                  nameof(Game)));
             }
 
             await repo.DeleteAsync<Team>(id);

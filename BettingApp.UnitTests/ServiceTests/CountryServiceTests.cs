@@ -1,18 +1,11 @@
-﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Services;
-using BettingApp.Infrastructure.Data;
-using BettingApp.Infrastructure.Data.Common;
-using BettingApp.Infrastructure.Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class CountryServiceTests
     {
         private IRepository repo { get; set; }
         private ICountryService countryService { get; set; }
+        private IGuard guard { get; set; }
         private BettingAppDbContext bettingAppDbContext { get; set; }
 
         [SetUp]
@@ -27,7 +20,8 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            countryService = new CountryService(repo);
+            guard = new Guard();
+            countryService = new CountryService(repo, guard);
         }
 
         [Test]

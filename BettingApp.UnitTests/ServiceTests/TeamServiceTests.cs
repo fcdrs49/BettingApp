@@ -22,7 +22,7 @@
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            countryService = new CountryService(repo);
+            countryService = new CountryService(repo, guard);
             teamService = new TeamService(repo, countryService, guard);
         }
 

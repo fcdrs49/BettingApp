@@ -1,8 +1,4 @@
-﻿
-using BettingApp.Core.Models.Transaction;
-using Microsoft.AspNetCore.Identity;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class UserServiceTests
@@ -27,7 +23,7 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo);
+            betService = new BetService(repo, guard);
             transactionService = new TransactionService(repo, betService);
             userService = new UserService(transactionService, betService, repo);
         }

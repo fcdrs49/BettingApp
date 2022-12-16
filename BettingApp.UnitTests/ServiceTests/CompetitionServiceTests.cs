@@ -1,11 +1,4 @@
-﻿using BettingApp.Core.Contracts;
-using BettingApp.Core.Services;
-using BettingApp.Infrastructure.Data;
-using BettingApp.Infrastructure.Data.Common;
-using BettingApp.Infrastructure.Data.Models;
-using Microsoft.EntityFrameworkCore;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class CompetitionServiceTests
@@ -29,10 +22,10 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            countryService = new CountryService(repo);
             guard = new Guard();
+            countryService = new CountryService(repo, guard);
             teamService = new TeamService(repo, countryService, guard);
-            competitionService = new CompetitionService(repo, teamService);
+            competitionService = new CompetitionService(repo, teamService, guard);
         }
 
         [Test]
@@ -138,7 +131,7 @@ namespace BettingApp.UnitTests
                 Assert.That(standingViewModel.Teams.Skip(3).First().Name, Is.EqualTo(teams[0].Name));
             });
 
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await competitionService.Standings(-1));
+            Assert.ThrowsAsync<BettingAppException>(async () => await competitionService.Standings(-1));
         }
 
         private Game createGame(int homeTeamId, int awayTeamId, int homeTeamGoals, int awayTeamGoals, int competitionId)

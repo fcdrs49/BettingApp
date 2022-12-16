@@ -1,25 +1,25 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Bet;
 using BettingApp.Core.Models.Game;
 using BettingApp.Core.Models.GameBet;
-using BettingApp.Infrastructure.Data;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Enums;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
 
 namespace BettingApp.Core.Services
 {
     public class BetService : IBetService
     {
         private readonly IRepository repo;
+        private readonly IGuard guard;
 
-        public BetService(IRepository _repo)
+        public BetService(IRepository _repo, IGuard _guard)
         {
             repo = _repo;
+            guard = _guard;
         }
 
         public async Task CreateBetAsync(BetQueryModel model, string userId)
@@ -38,7 +38,6 @@ namespace BettingApp.Core.Services
             };
             await repo.AddAsync(bet);
             await repo.SaveChangesAsync();
-
 
             foreach (var gb in model.GameBets)
             {
@@ -107,6 +106,7 @@ namespace BettingApp.Core.Services
         public async Task<IEnumerable<GameBetViewModel>> GetGameBets(int betId)
         {
             var bet = await repo.GetByIdAsync<Bet>(betId);
+            guard.AgainstNull(bet, string.Format(ExceptionMessages.NotFound, nameof(Bet), betId));
             return await repo.AllReadonly<GameBet>()
                 .Where(gb => gb.BetId == betId)
                 .Include(gb => gb.Game)
@@ -157,7 +157,7 @@ namespace BettingApp.Core.Services
                            b.GameId != wonBet.GameId)
                     .ToListAsync();
 
-                if (!gameBets.Any(g => g.Won == false))
+                if ((!gameBets.Any(g => g.Won == false)) || (gameBets.Count == 1))
                 {
                     var betRate = gameBets.Select(gb => gb.BetRate).Aggregate((a, b) => a * b) * wonBet.BetRate;
                     var bet = await repo.GetByIdAsync<Bet>(wonBet.BetId);
@@ -176,7 +176,7 @@ namespace BettingApp.Core.Services
         public async Task UpdateBetsWhenGameCorrected(GameFormModel game)
         {
             var gameBets = await repo.AllReadonly<GameBet>()
-                .Where(gb => gb.BetId == game.Id)
+                .Where(gb => gb.GameId == game.Id)
                 .ToListAsync();
 
             foreach (var gameBet in gameBets)
@@ -189,7 +189,7 @@ namespace BettingApp.Core.Services
                     bet.Won = false;
                     bet.Closed = false;
                     bet.WinAmount = 0;
-                    repo.Update(gameBet);
+                    repo.Update(bet);
                 }
             }
 
@@ -199,6 +199,7 @@ namespace BettingApp.Core.Services
         private async Task<string> IsBetWon(int betId)
         {
             var bet = await repo.GetByIdAsync<Bet>(betId);
+            guard.AgainstNull(bet, string.Format(ExceptionMessages.NotFound, nameof(Bet), betId));
             var gameBets = await repo.AllReadonly<GameBet>()
                 .Include(gb => gb.Game)
                 .Where(gb => gb.BetId == bet.Id)
@@ -213,12 +214,13 @@ namespace BettingApp.Core.Services
                 return "❌";
             }
 
-            return "";
+                return "";
         }
 
         public async Task CancelBet(int betId)
         {
             var bet = await repo.GetByIdAsync<Bet>(betId);
+            guard.AgainstNull(bet, string.Format(ExceptionMessages.NotFound, nameof(Bet), betId));
             bet.Cancelled = true;
             bet.Closed = true;
             bet.Won = true;

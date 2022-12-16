@@ -1,4 +1,6 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Currency;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Models;
@@ -9,10 +11,12 @@ namespace BettingApp.Core.Services
 	public class CurrencyService : ICurrencyService
 	{
 		private readonly IRepository repo;
+		private readonly IGuard guard;
 
-		public CurrencyService(IRepository _repo)
+		public CurrencyService(IRepository _repo, IGuard _guard)
 		{
 			repo = _repo;
+			guard = _guard;
 		}
 
 		public async Task<IEnumerable<CurrencyModel>> AllAsync()
@@ -30,18 +34,18 @@ namespace BettingApp.Core.Services
 		}
 
 		public async Task<CurrencyModel> ByCodeAsync(string ISOCode)
-		{
-			return await repo.AllReadonly<Currency>()
-				.Where(c => c.ISOCode == ISOCode)	
-				.Select(c => new CurrencyModel()
-				{
-					ISOCode = c.ISOCode,
-					Description = c.Description,
-					ExchangeRate = c.ExchangeRate,
-					DateTime = c.DateTime,
-					ShortDescription = c.ShortDescription
-				})
-				.FirstAsync();
+        {
+            var currency = await repo.GetByIdAsync<Currency>(ISOCode);
+            guard.AgainstNull(currency, string.Format(ExceptionMessages.NotFound, nameof(Currency), ISOCode));
+
+			return new CurrencyModel()
+			{
+				ISOCode = currency.ISOCode,
+				Description = currency.Description,
+				ExchangeRate = currency.ExchangeRate,
+				DateTime = currency.DateTime,
+				ShortDescription = currency.ShortDescription
+			};
 		}
 
 		public async Task CreateAsync(CurrencyModel model)
@@ -61,19 +65,17 @@ namespace BettingApp.Core.Services
 
 		public async Task DeleteAsync(string ISOCode)
 		{
-			if(await repo.AllReadonly<Bet>()
-				.Where(b => b.CurrencyCode == ISOCode)
-				.AnyAsync())
-			{
-				throw new InvalidOperationException("This currency is used in bets!");
-			}
-
+			var currency = await ByCodeAsync(ISOCode);
 			if(await repo.AllReadonly<Transaction>()
 				.Where(t => t.CurrencyCode == ISOCode)
 				.AnyAsync())
-			{
-				throw new InvalidOperationException("This currency is used in transactions!");
-			}
+            {
+                throw new InvalidOperationException(
+                    string.Format(ExceptionMessages.EntityExistsMessageOnDelete,
+                                  nameof(Currency),
+                                  currency.Description,
+                                  nameof(Transaction)));
+            }
 
 			await repo.DeleteAsync<Currency>(ISOCode);
 			await repo.SaveChangesAsync();

@@ -1,6 +1,4 @@
-﻿using BettingApp.Core.Models.Employee;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class EmployeeServiceTests

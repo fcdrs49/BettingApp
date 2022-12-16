@@ -1,4 +1,5 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
 using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Employee;
 using BettingApp.Infrastructure.Data.Common;
@@ -21,27 +22,25 @@ namespace BettingApp.Core.Services
 
         public async Task<EmployeeFormModel> ByIdAsync(int id)
         {
-            var emp = await repo.All<Employee>()
-                .Select(e => new EmployeeFormModel()
-                {
-                    Id = e.Id,
-                    FirstName = e.FirstName,
-                    LastName = e.LastName,
-                    BirthDate = e.BirthDate,
-                    ImageUrl = e.ImageUrl,
-                    CountryId = e.CountryId,
-                    TeamId = e.TeamId,
-                    EmployeeType = e.EmployeeType
-                })
-                .FirstOrDefaultAsync();
-
-            guard.AgainstNull(emp, "Employee can not be null!");
-            return emp;
+            var emp = await repo.GetByIdAsync<Employee>(id);
+            guard.AgainstNull(emp, string.Format(ExceptionMessages.NotFound, nameof(Employee), id));
+            return new EmployeeFormModel()
+            {
+                Id = emp.Id,
+                FirstName = emp.FirstName,
+                LastName = emp.LastName,
+                BirthDate = emp.BirthDate,
+                ImageUrl = emp.ImageUrl,
+                CountryId = emp.CountryId,
+                TeamId = emp.TeamId,
+                EmployeeType = emp.EmployeeType
+            };
         }
 
         public async Task EditAsync(EmployeeFormModel model)
         {
             var employee = await repo.GetByIdAsync<Employee>(model.Id);
+            guard.AgainstNull(employee, string.Format(ExceptionMessages.NotFound, nameof(Employee), model.Id));
 
             employee.LastName = model.LastName;
             employee.FirstName = model.FirstName;
@@ -78,7 +77,7 @@ namespace BettingApp.Core.Services
                 .Include(e => e.Country)
                 .FirstOrDefaultAsync();
 
-            guard.AgainstNull(emp, "Employee can not found!");
+            guard.AgainstNull(emp, string.Format(ExceptionMessages.NotFound, nameof(Employee), id));
 
             return new EmployeeViewModel()
             {
@@ -112,6 +111,7 @@ namespace BettingApp.Core.Services
 
         public async Task DeleteAsync(int id)
         {
+            await ByIdAsync(id);
             await repo.DeleteAsync<Employee>(id);
             await repo.SaveChangesAsync();
         }

@@ -1,8 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class GameServiceTests
@@ -29,11 +25,12 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            countryService = new CountryService(repo);
+            guard = new Guard();
+            countryService = new CountryService(repo, guard);
             teamService = new TeamService(repo, countryService, guard);
-            competitionService = new CompetitionService(repo, teamService);
-            betService = new BetService(repo);
-            gameService = new GameService(repo, competitionService, teamService, betService);
+            competitionService = new CompetitionService(repo, teamService, guard);
+            betService = new BetService(repo, guard);
+            gameService = new GameService(repo, competitionService, teamService, betService, guard);
         }
 
         [Test]
@@ -310,8 +307,7 @@ namespace BettingApp.UnitTests
             await repo.AddAsync(gameBet);
             await repo.SaveChangesAsync();
 
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await gameService.DeleteAsync(1));
-            Assert.That(ex.Message, Is.EqualTo("There are bets for this game!"));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await gameService.DeleteAsync(1));
 
             await gameService.DeleteAsync(2);
             var actualGame = await repo.GetByIdAsync<Game>(2);

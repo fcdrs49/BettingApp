@@ -1,6 +1,4 @@
-﻿using BettingApp.Core.Models.Transaction;
-
-namespace BettingApp.UnitTests
+﻿namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class TransactionServiceTests
@@ -24,7 +22,7 @@ namespace BettingApp.UnitTests
             bettingAppDbContext.Database.EnsureDeleted();
             bettingAppDbContext.Database.EnsureCreated();
             repo = new Repository(bettingAppDbContext);
-            betService = new BetService(repo);
+            betService = new BetService(repo, guard);
             transactionService = new TransactionService(repo, betService);
         }
 

@@ -1,4 +1,6 @@
-﻿using BettingApp.Core.Contracts;
+﻿using BettingApp.Core.Constants;
+using BettingApp.Core.Contracts;
+using BettingApp.Core.Exceptions;
 using BettingApp.Core.Models.Competition;
 using BettingApp.Core.Models.Game;
 using BettingApp.Core.Models.Team;
@@ -14,17 +16,20 @@ namespace BettingApp.Core.Services
         private readonly ICompetitionService competitionService;
         private readonly ITeamService teamService;
         private readonly IBetService betService;
+        private readonly IGuard guard;
 
         public GameService(
             IRepository _repo, 
             ICompetitionService _competitionService, 
             ITeamService _teamService,
-            IBetService _betService)
+            IBetService _betService,
+            IGuard _guard)
         {
             repo = _repo;
             competitionService = _competitionService;
             teamService = _teamService;
             betService = _betService;
+            guard = _guard;
         }
 
         public async Task<GameViewModel> DetailsByIdAsync(int id)
@@ -59,8 +64,9 @@ namespace BettingApp.Core.Services
                     HomeGoals = g.HomeTeamGoals,
                     AwayGoals = g.AwayTeamGoals
                 })
-                .FirstAsync();
-            
+                .FirstOrDefaultAsync();
+
+            guard.AgainstNull(model, string.Format(ExceptionMessages.NotFound, nameof(Game), id));
             return model;
         }
 
@@ -159,6 +165,7 @@ namespace BettingApp.Core.Services
         public async Task EditAsync(GameFormModel model)
         {
             var game = await repo.GetByIdAsync<Game>(model.Id);
+            guard.AgainstNull(game, string.Format(ExceptionMessages.NotFound, nameof(Game), model.Id));
 
             if(model.Finished && !game.Finished)
             {
@@ -212,7 +219,11 @@ namespace BettingApp.Core.Services
                 .Where(gb => gb.GameId == id)
                 .AnyAsync())
             {
-                throw new InvalidOperationException("There are bets for this game!");
+                throw new InvalidOperationException(
+                    string.Format(ExceptionMessages.EntityExistsMessageOnDelete,
+                                  nameof(Bet),
+                                  id,
+                                  nameof(GameBet)));
             }
 
             await repo.DeleteAsync<Game>(id);
