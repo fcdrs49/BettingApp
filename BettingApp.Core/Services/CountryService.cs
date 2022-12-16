@@ -66,20 +66,18 @@ namespace BettingApp.Core.Services
 
         public async Task DeleteAsync(int id)
         {
-            if(await repo.AllReadonly<Competition>()
-                .Where(c => c.CountryId == id)
-                .AnyAsync())
-            {
-                throw new InvalidOperationException("Competitions for this country exist!");
-            }
-
-            if(await repo.AllReadonly<Employee>()
+            if (await repo.AllReadonly<Employee>()
                 .Where(e => e.CountryId == id)
                 .AnyAsync())
             {
                 throw new InvalidOperationException("Employees for this country exist!");
             }
-
+            if (await repo.AllReadonly<Competition>()
+                .Where(c => c.CountryId == id)
+                .AnyAsync())
+            {
+                throw new InvalidOperationException("Competitions for this country exist!");
+            }
             if(await repo.AllReadonly<Team>()
                 .Where(t => t.CountryId == id)
                 .AnyAsync())

@@ -122,7 +122,7 @@ namespace BettingApp.Areas.Identity.Pages.Account
                         }
                         else if(await _userManager.IsInRoleAsync(user, "Bookmaker"))
                         {
-                            return RedirectToAction("List", "Games", new { Area = BookmakerConstants.BookmakerRoleName });
+                            return RedirectToAction("List", "Game", new { Area = BookmakerConstants.BookmakerRoleName });
                         }
                     }
 

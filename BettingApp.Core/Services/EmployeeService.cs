@@ -73,7 +73,12 @@ namespace BettingApp.Core.Services
 
         public async Task<EmployeeViewModel> DetailsByIdAsync(int id)
         {
-            var emp = await repo.GetByIdAsync<Employee>(id);
+            var emp = await repo.AllReadonly<Employee>()
+                .Include(e => e.Team)
+                .Include(e => e.Country)
+                .FirstOrDefaultAsync();
+
+            guard.AgainstNull(emp, "Employee can not found!");
 
             return new EmployeeViewModel()
             {

@@ -159,9 +159,15 @@ namespace BettingApp.Core.Services
                 var goalsFor = games
                     .Where(g => g.HomeTeamId == teamId)
                     .Sum(g => g.HomeTeamGoals);
-                var goalsAgainst = games
+                goalsFor += games
                     .Where(g => g.AwayTeamId == teamId)
                     .Sum(g => g.AwayTeamGoals);
+                var goalsAgainst = games
+                    .Where(g => g.HomeTeamId == teamId)
+                    .Sum(g => g.AwayTeamGoals);
+                goalsAgainst += games
+                    .Where(g => g.AwayTeamId == teamId)
+                    .Sum(g => g.HomeTeamGoals);
 
                 model.Add(new TeamStandingModel()
                 {
@@ -178,7 +184,12 @@ namespace BettingApp.Core.Services
                 });
             }
 
-            model = model.OrderByDescending(m => m.Points).ToList();
+            model = model
+                .OrderByDescending(m => m.Points)
+                .ThenByDescending(m => m.GoalsFor - m.GoalsAgainst)
+                .ThenByDescending(m => m.GoalsFor)
+                .ThenByDescending(m => m.Name)
+                .ToList();
             return model;
         }
     }

@@ -5,6 +5,7 @@ global using BettingApp.Core.Models.Competition;
 global using BettingApp.Core.Models.Game;
 global using BettingApp.Core.Models.GameBet;
 global using BettingApp.Core.Models.Team;
+global using BettingApp.Core.Models.Country;
 global using BettingApp.Core.Services;
 global using BettingApp.Infrastructure.Data;
 global using BettingApp.Infrastructure.Data.Common;

@@ -224,7 +224,7 @@ namespace BettingApp.UnitTests
                 DrawRate = game.DrawRate,
                 HomeRate = game.HomeRate,
                 HomeTeamId = game.AwayTeamId,
-                Finished = game.Finished,
+                Finished = !game.Finished,
                 HomeTeamGoals = game.AwayTeamGoals,
                 ScoreSign = game.Sign
             };
@@ -240,6 +240,17 @@ namespace BettingApp.UnitTests
                 Assert.That(actualGame.HomeTeamGoals, Is.EqualTo(gameFormModel.HomeTeamGoals));
                 Assert.That(actualGame.AwayTeamGoals, Is.EqualTo(gameFormModel.AwayTeamGoals));
                 Assert.That(actualGame.HomeRate, Is.EqualTo(gameFormModel.HomeRate));
+            });
+
+            gameFormModel.Finished = !gameFormModel.Finished;
+            await gameService.EditAsync(gameFormModel);
+            actualGame = await repo.GetByIdAsync<Game>(gameFormModel.Id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualGame, Is.Not.Null);
+                Assert.That(actualGame.Id, Is.EqualTo(gameFormModel.Id));
+                Assert.That(actualGame.Finished, Is.EqualTo(gameFormModel.Finished));
             });
         }
 
@@ -384,6 +395,7 @@ namespace BettingApp.UnitTests
 
             var games = await gameService.All(true, false, "Arsenal", "");
             Assert.That(games.GamesCount, Is.EqualTo(0));
+            var competition = await competitionService.GetByIdAsync(1);
 
             for (int i = 0; i < 5; i++)
             {
@@ -403,7 +415,8 @@ namespace BettingApp.UnitTests
                 await repo.AddAsync(game);
             }
             await repo.SaveChangesAsync();
-            games = await gameService.All(true, false, "Arsenal");
+            games = await gameService.All(true, false, "Arsenal", competition.Name);
+            //games = await gameService.All(true, false, "Arsenal");
             Assert.Multiple(() =>
             {
                 Assert.That(games.GamesCount, Is.EqualTo(5));

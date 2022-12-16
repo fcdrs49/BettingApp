@@ -50,7 +50,7 @@
                     <input asp-for="Amount" class="form-control" />
                     <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" hidden="hidden">
                     <label asp-for="CurrencyCode" class="control-label">Currency</label>
                     <select asp-for="CurrencyCode" class="form-control">
                         @foreach (var currency in Model.Currencies)
@@ -72,4 +72,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}
