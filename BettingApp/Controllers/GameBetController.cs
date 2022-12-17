@@ -32,6 +32,7 @@ namespace BettingApp.Controllers
         }
 
         [HttpDelete]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int gameId)
         {
             var bets = await GetBetsFromSessionStorage();
@@ -49,20 +50,12 @@ namespace BettingApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int gameId, string prediction)
         {
             var model = await betService.CreateGameBet(gameId, prediction);
             var bets = await GetBetsFromSessionStorage();
-            if (bets.Any(b => b.GameId == gameId))
-            {
-                var bet = bets.First(b => b.GameId == gameId);
-                bet.Prediction = prediction;
-                bet.BetRate = model.BetRate;
-            }
-            else
-            {
-                bets.Add(model);
-            }
+            bets = betService.AddGameBetToCollection(bets, gameId, model, prediction);
 
             SetGameBetsToSessionStorage(bets);
 

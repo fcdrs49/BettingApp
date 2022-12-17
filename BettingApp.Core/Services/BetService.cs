@@ -32,7 +32,7 @@ namespace BettingApp.Core.Services
             var bet = new Bet()
             {
                 UserId = userId,
-                Amount = model.Amount,
+                Amount = Math.Round(model.Amount, 2),
                 CurrencyCode = "BGN",
                 DateTime = DateTime.Now
             };
@@ -52,7 +52,7 @@ namespace BettingApp.Core.Services
                 var gameBet = new GameBet()
                 {
                     BetId = bet.Id,
-                    BetRate = gb.BetRate,
+                    BetRate = Math.Round(gb.BetRate, 2),
                     GameId = gb.GameId,
                     Prediction = sign
                 };
@@ -64,9 +64,9 @@ namespace BettingApp.Core.Services
 
         public decimal GetBetsAmount(string userId)
         {
-            return repo.AllReadonly<Bet>()
+            return Math.Round(repo.AllReadonly<Bet>()
                 .Where(b => b.UserId == userId)
-                .Sum(b => b.WinAmount - b.Amount);
+                .Sum(b => b.WinAmount - b.Amount),2);
         }
 
         public async Task<IEnumerable<BetViewModel>> GetUserBets(string userId)
@@ -76,12 +76,12 @@ namespace BettingApp.Core.Services
                 .Select(b => new BetViewModel()
                 {
                     Id = b.Id,
-                    Amount = b.Amount,
+                    Amount = Math.Round(b.Amount, 2),
                     //CurrencyCode = b.CurrencyCode,
                     CurrencyCode = "BGN",
                     DateTime = b.DateTime,
                     Closed = b.Closed,
-                    WinAmount = b.WinAmount
+                    WinAmount = Math.Round(b.WinAmount, 2)
                 })
                 .ToListAsync();
 
@@ -93,7 +93,7 @@ namespace BettingApp.Core.Services
                     .ToListAsync();
                 bet.GamesCount = gameBets.Count;
                 var betRates = gameBets.Select(gb => gb.BetRate).ToList();
-                bet.BetRate = betRates.Aggregate((a, b) => a * b);
+                bet.BetRate = Math.Round(betRates.Aggregate((a, b) => a * b),2);
                 bet.Won = await IsBetWon(bet.Id);
                 bet.CanBeClosed = !bet.Closed &&
                     !gameBets.Any(gb => gb.Game.Finished == true) &&
@@ -118,7 +118,7 @@ namespace BettingApp.Core.Services
                     GameId = b.GameId,
                     HomeTeam = b.Game.HomeTeam.Name,
                     AwayTeam = b.Game.AwayTeam.Name,
-                    BetRate = b.BetRate,
+                    BetRate = Math.Round(b.BetRate,2),
                     Prediction = b.Prediction.ToString(),
                     Won = b.Won ? "✔️" : 
                           b.Game.Finished ? "❌" : ""
@@ -157,15 +157,19 @@ namespace BettingApp.Core.Services
                            b.GameId != wonBet.GameId)
                     .ToListAsync();
 
-                if ((!gameBets.Any(g => g.Won == false)) || (gameBets.Count == 1))
+                if (!gameBets.Any(g => g.Won == false))
                 {
-                    var betRate = gameBets.Select(gb => gb.BetRate).Aggregate((a, b) => a * b) * wonBet.BetRate;
+                    var betRate = wonBet.BetRate;
+                    if (gameBets.Count > 0)
+                    {
+                        betRate = gameBets.Select(gb => gb.BetRate).Aggregate((a, b) => a * b) * wonBet.BetRate;
+                    }
                     var bet = await repo.GetByIdAsync<Bet>(wonBet.BetId);
                     if (!bet.Cancelled)
                     {
                         bet.Won = true;
                         bet.Closed = true;
-                        bet.WinAmount = betRate * bet.Amount;
+                        bet.WinAmount = Math.Round(betRate * bet.Amount,2);
                         repo.Update(bet);
                     }
                 }
@@ -224,7 +228,7 @@ namespace BettingApp.Core.Services
             bet.Cancelled = true;
             bet.Closed = true;
             bet.Won = true;
-            bet.WinAmount = bet.Amount;
+            bet.WinAmount = Math.Round(bet.Amount,2);
             repo.Update(bet);
             await repo.SaveChangesAsync();
         }
@@ -246,10 +250,26 @@ namespace BettingApp.Core.Services
                 GameId = game.Id,
                 HomeTeam = homeTeam.Name,
                 AwayTeam = awayTeam.Name,
-                BetRate = betRate,
+                BetRate = Math.Round(betRate,2),
                 Prediction = prediction
             };
             return model;
+        }
+
+        public List<GameBetViewModel> AddGameBetToCollection(List<GameBetViewModel> bets, int gameId, GameBetViewModel model, string prediction)
+        {
+            if (bets.Any(b => b.GameId == gameId))
+            {
+                var bet = bets.First(b => b.GameId == gameId);
+                bet.Prediction = prediction;
+                bet.BetRate = model.BetRate;
+            }
+            else
+            {
+                bets.Add(model);
+            }
+
+            return bets;
         }
     }
 }

@@ -36,7 +36,7 @@ namespace BettingApp.Core.Services
         {
             var transactionsAmount = transactionService.TotalAmount(userId);
             var betsAmount = betService.GetBetsAmount(userId);
-            return transactionsAmount + betsAmount;
+            return Math.Round(transactionsAmount + betsAmount,2);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace BettingApp.Core.Services
                 .Where(t => t.UserId == userId)
                 .Select(t => new TransactionModel()
                 {
-                    Amount = t.Amount,
+                    Amount = Math.Round(t.Amount,2),
                     CurrencyCode = "BGN",
                     TransactionType = t.TransactionType.ToString(),
                     DateTime = t.DateTime,
@@ -67,9 +67,9 @@ namespace BettingApp.Core.Services
 
         public decimal TotalAmount(string userId)
         {
-            return repo.AllReadonly<Transaction>()
+            return Math.Round(repo.AllReadonly<Transaction>()
                 .Where(t => t.UserId == userId)
-                .Sum(t => t.Amount);
+                .Sum(t => t.Amount),2);
         }
 
         public async Task<IEnumerable<string>> GetUserCards(string userId)

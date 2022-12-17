@@ -104,6 +104,7 @@ namespace BettingApp.Areas.Identity.Pages.Account
             [Required]
             [MinAge(18)]
             [MaxAge(100)]
+            [DataType(DataType.Date)]
             [Display(Name = "Birth Date")]
             public DateTime BirthDate { get; set; }
         }

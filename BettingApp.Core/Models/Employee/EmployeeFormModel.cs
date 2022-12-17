@@ -25,7 +25,7 @@ namespace BettingApp.Core.Models.Employee
         public string LastName { get; set; } = null!;
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         [Display(Name = "Date Of Birth")]
         public DateTime BirthDate { get; set; }
 
