@@ -26,6 +26,7 @@ namespace BettingApp.Infrastructure.Configuration
                 NormalizedEmail = "ADMIN@BETTINGAPP.BG",
                 FirstName = "admin",
                 LastName = "admin",
+                BirthDate = new DateTime(1990, 01, 01),
                 SecurityStamp = Guid.NewGuid().ToString()
             };
             adminUser.PasswordHash =
@@ -41,6 +42,7 @@ namespace BettingApp.Infrastructure.Configuration
                 NormalizedEmail = "BOOKMAKER@BETTINGAPP.BG",
                 FirstName = "Ivan",
                 LastName = "Ivanov",
+                BirthDate = new DateTime(1990, 01, 01),
                 SecurityStamp = Guid.NewGuid().ToString()
             };
             bookmakerUser.PasswordHash = 
@@ -55,7 +57,9 @@ namespace BettingApp.Infrastructure.Configuration
                 Email = "user2@bettingapp.bg",
                 NormalizedUserName = "user2@bettingapp.bg",
                 FirstName = "Petar",
-                LastName = "Petrov"
+                LastName = "Petrov",
+                BirthDate = new DateTime(1990, 01, 01),
+                SecurityStamp = Guid.NewGuid().ToString()
             };
             user.PasswordHash
                 = hasher.HashPassword(user, "UserPass321");

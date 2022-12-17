@@ -1,10 +1,10 @@
-name: Build and deploy .NET Core application to Web App BettingApp20221212142133
+name: Build and deploy .NET Core application to Web App BettingAppSU
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: BettingApp20221212142133
+  AZURE_WEBAPP_NAME: BettingAppSU
   AZURE_WEBAPP_PACKAGE_PATH: BettingApp/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
@@ -30,7 +30,7 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.BettingApp20221212142133_FFFF }}
+        publish-profile: ${{ secrets.BettingAppSU_FFFF }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1.0.0

@@ -12,6 +12,8 @@ namespace BettingApp.Infrastructure.Data.Models
         [StringLength(LastNameMaxLength)]
         public string LastName { get; set; } = null!;
 
+        public DateTime BirthDate { get; set; }
+
         public IEnumerable<UserCard> Cards { get; set; }
             = new List<UserCard>();
 

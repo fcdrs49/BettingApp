@@ -1,5 +1,6 @@
 using BettingApp.Infrastructure.Data;
 using BettingApp.Infrastructure.Data.Models;
+using BettingApp.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
 });
 builder.Services.AddApplicationServices();
 builder.Services.AddResponseCaching();

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using BettingApp.Core.ValidationAttributes;
 using BettingApp.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -99,6 +100,12 @@ namespace BettingApp.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            [Required]
+            [MinAge(18)]
+            [MaxAge(100)]
+            [Display(Name = "Birth Date")]
+            public DateTime BirthDate { get; set; }
         }
 
 
