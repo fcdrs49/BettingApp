@@ -27,7 +27,7 @@ namespace BettingApp.Areas.Admin.Controllers
 
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(1440));
-
+             
             cache.Set(CurrenciesCacheKey, currencies, cacheOptions);
 
             return View(currencies);

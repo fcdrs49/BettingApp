@@ -64,7 +64,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bets");
+                    b.ToTable("Bets", (string)null);
                 });
 
             modelBuilder.Entity("BettingApp.Infrastructure.Data.Models.Competition", b =>
@@ -98,7 +98,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Competitions");
+                    b.ToTable("Competitions", (string)null);
 
                     b.HasData(
                         new
@@ -211,7 +211,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
 
                     b.HasData(
                         new
@@ -1221,7 +1221,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasKey("ISOCode");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
 
                     b.HasData(
                         new
@@ -1290,7 +1290,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("BettingApp.Infrastructure.Data.Models.Game", b =>
@@ -1345,7 +1345,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
 
                     b.HasData(
                         new
@@ -39952,7 +39952,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameBets");
+                    b.ToTable("GameBets", (string)null);
                 });
 
             modelBuilder.Entity("BettingApp.Infrastructure.Data.Models.Team", b =>
@@ -39982,7 +39982,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Teams", (string)null);
 
                     b.HasData(
                         new
@@ -40551,7 +40551,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("BettingApp.Infrastructure.Data.Models.User", b =>
@@ -40702,7 +40702,7 @@ namespace BettingApp.Infrastructure.Migrations
 
                     b.HasKey("UserId", "CardNumber");
 
-                    b.ToTable("UserCards");
+                    b.ToTable("UserCards", (string)null);
 
                     b.HasData(
                         new

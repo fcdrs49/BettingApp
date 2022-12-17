@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BettingApp.Core\BettingApp.Core.csproj" />
+    <ProjectReference Include="..\BettingApp\BettingApp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -228,5 +228,28 @@ namespace BettingApp.Core.Services
             repo.Update(bet);
             await repo.SaveChangesAsync();
         }
+
+        public async Task<GameBetViewModel> CreateGameBet(int gameId, string prediction)
+        {
+            var game = await repo.GetByIdAsync<Game>(gameId);
+            var homeTeam = await repo.GetByIdAsync<Team>(game.HomeTeamId);
+            var awayTeam = await repo.GetByIdAsync<Team>(game.AwayTeamId);
+            decimal betRate = 1;
+            switch (prediction)
+            {
+                case "1": betRate = game.HomeRate; break;
+                case "X": betRate = game.DrawRate; break;
+                case "2": betRate = game.AwayRate; break;
+            }
+            var model = new GameBetViewModel()
+            {
+                GameId = game.Id,
+                HomeTeam = homeTeam.Name,
+                AwayTeam = awayTeam.Name,
+                BetRate = betRate,
+                Prediction = prediction
+            };
+            return model;
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace BettingApp.Areas.Admin.Controllers
             userService = _userService;
             cache = _cache;
         }
-
+            
         public async Task<IActionResult> Index()
         {
             var users = await userService.All();

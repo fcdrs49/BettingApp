@@ -35,7 +35,9 @@ namespace BettingApp.Core.Services
 
 		public async Task<CurrencyModel> ByCodeAsync(string ISOCode)
         {
-            var currency = await repo.GetByIdAsync<Currency>(ISOCode);
+			var currency = await repo.AllReadonly<Currency>()
+				.Where(c => c.ISOCode == ISOCode)
+				.FirstOrDefaultAsync();
             guard.AgainstNull(currency, string.Format(ExceptionMessages.NotFound, nameof(Currency), ISOCode));
 
 			return new CurrencyModel()

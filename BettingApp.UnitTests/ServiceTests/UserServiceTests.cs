@@ -8,21 +8,11 @@
         private ITransactionService transactionService { get; set; }
         private IBetService betService { get; set; }
         private IGuard guard { get; set; }
-        private BettingAppDbContext bettingAppDbContext { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            guard = new Guard();
-            var contextOptions = new DbContextOptionsBuilder<BettingAppDbContext>()
-                .UseInMemoryDatabase("BetDb")
-                .Options;
-
-            bettingAppDbContext = new BettingAppDbContext(contextOptions);
-
-            bettingAppDbContext.Database.EnsureDeleted();
-            bettingAppDbContext.Database.EnsureCreated();
-            repo = new Repository(bettingAppDbContext);
+            repo = DatabaseMock.Instance;
             betService = new BetService(repo, guard);
             transactionService = new TransactionService(repo, betService);
             userService = new UserService(transactionService, betService, repo);

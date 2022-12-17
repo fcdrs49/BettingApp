@@ -1,14 +1,15 @@
 {
   "dependencies": {
     "mssql1": {
-      "type": "mssql.local",
-      "connectionId": "ConnectionStrings:DefaultConnection"
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:DefaultConnection",
+      "dynamicId": null
     },
     "mssql2": {
-      "secretStore": "LocalSecretsFile",
-      "type": "mssql.local",
-      "connectionId": "ConnectionStrings:BettingAppDbContextConnection",
-      "dynamicId": null
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:BettingAppDbContextConnection"
     }
   }
 }

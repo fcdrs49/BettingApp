@@ -1,4 +1,5 @@
-﻿namespace BettingApp.UnitTests
+﻿
+namespace BettingApp.UnitTests
 {
     [TestFixture]
     public class CurrencyServiceTests
@@ -6,20 +7,11 @@
         private IRepository repo { get; set; }
         private ICurrencyService currencyService { get; set; }
         private IGuard guard { get; set; }
-        private BettingAppDbContext bettingAppDbContext { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            var contextOptions = new DbContextOptionsBuilder<BettingAppDbContext>()
-                .UseInMemoryDatabase("BetDb")
-                .Options;
-
-            bettingAppDbContext = new BettingAppDbContext(contextOptions);
-
-            bettingAppDbContext.Database.EnsureDeleted();
-            bettingAppDbContext.Database.EnsureCreated();
-            repo = new Repository(bettingAppDbContext);
+            repo = DatabaseMock.Instance;
             guard = new Guard();
             currencyService = new CurrencyService(repo, guard);
         }

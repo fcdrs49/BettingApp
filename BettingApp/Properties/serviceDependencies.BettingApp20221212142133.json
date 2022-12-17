@@ -2,14 +2,8 @@
   "dependencies": {
     "mssql1": {
       "secretStore": "AzureAppSettings",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/bettingappdbserver/databases/BettingApp_db",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:DefaultConnection"
-    },
-    "mssql2": {
-      "secretStore": "AzureAppSettings",
       "type": "mssql.onprem",
-      "connectionId": "ConnectionStrings:BettingAppDbContextConnection",
+      "connectionId": "ConnectionStrings:DefaultConnection",
       "dynamicId": null
     }
   }

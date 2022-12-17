@@ -3,6 +3,7 @@ using BettingApp.Core.Models.Bet;
 using BettingApp.Core.Models.GameBet;
 using BettingApp.Infrastructure.Data.Common;
 using BettingApp.Infrastructure.Data.Models;
+using Humanizer.Bytes;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -11,10 +12,12 @@ namespace BettingApp.Controllers
     public class GameBetController : Controller
     {
         private readonly IRepository repo;
+        private readonly IBetService betService;
 
-        public GameBetController(IRepository _repo)
+        public GameBetController(IRepository _repo, IBetService _betService)
         {
             repo = _repo;
+            betService = _betService;
         }
 
         [HttpGet]
@@ -48,30 +51,13 @@ namespace BettingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(int gameId, string prediction)
         {
-            var game = await repo.GetByIdAsync<Game>(gameId);
-            var homeTeam = await repo.GetByIdAsync<Team>(game.HomeTeamId);
-            var awayTeam = await repo.GetByIdAsync<Team>(game.AwayTeamId);
-            decimal betRate = 1;
-            switch(prediction)
-            {
-                case "1": betRate = game.HomeRate;break;
-                case "X": betRate = game.DrawRate;break;
-                case "2": betRate = game.AwayRate;break;
-            }
-            var model = new GameBetViewModel()
-            {
-                GameId = game.Id,
-                HomeTeam = homeTeam.Name,
-                AwayTeam = awayTeam.Name,
-                BetRate = betRate,
-                Prediction = prediction
-            };
+            var model = await betService.CreateGameBet(gameId, prediction);
             var bets = await GetBetsFromSessionStorage();
             if (bets.Any(b => b.GameId == gameId))
             {
                 var bet = bets.First(b => b.GameId == gameId);
                 bet.Prediction = prediction;
-                bet.BetRate = betRate;
+                bet.BetRate = model.BetRate;
             }
             else
             {

@@ -92,7 +92,7 @@ namespace BettingApp.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await gameService.DeleteAsync(id);
-            return RedirectToAction("Games", "Admin");
+            return RedirectToAction(nameof(List));
         }
 
         [HttpGet]

@@ -10,21 +10,11 @@
         private ICountryService countryService { get; set; }
         private IBetService betService { get; set; }
         private IGuard guard { get; set; }
-        private BettingAppDbContext bettingAppDbContext { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            guard = new Guard();
-            var contextOptions = new DbContextOptionsBuilder<BettingAppDbContext>()
-                .UseInMemoryDatabase("BetDb")
-                .Options;
-
-            bettingAppDbContext = new BettingAppDbContext(contextOptions);
-
-            bettingAppDbContext.Database.EnsureDeleted();
-            bettingAppDbContext.Database.EnsureCreated();
-            repo = new Repository(bettingAppDbContext);
+            repo = DatabaseMock.Instance;
             guard = new Guard();
             countryService = new CountryService(repo, guard);
             teamService = new TeamService(repo, countryService, guard);
