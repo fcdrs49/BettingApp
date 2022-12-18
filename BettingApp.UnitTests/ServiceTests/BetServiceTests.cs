@@ -370,5 +370,73 @@
             Assert.That(gameBetDraw.Won, Is.False);
             Assert.That(gameBetAway.Won, Is.False);
         }
+
+        [Test]
+        public void TestAddBetGameToCollection()
+        {
+            var gameBetViewModels = new List<GameBetViewModel>()
+            {
+                new GameBetViewModel()
+                {
+                    HomeTeam = "Arsenal",
+                    AwayTeam = "Brentford",
+                    BetRate = 2,
+                    Prediction = "1",
+                    GameId = 5
+                }
+            };
+
+            var updateExistingModel = new GameBetViewModel()
+            {
+                HomeTeam = "Arsenal",
+                AwayTeam = "Brentford",
+                BetRate = 2,
+                Prediction = "2",
+                GameId = 5
+            };
+
+            var addNewModel = new GameBetViewModel()
+            {
+                HomeTeam = "Chelsea",
+                AwayTeam = "Arsenal",
+                BetRate = 2,
+                Prediction = "X",
+                GameId = 4
+            };
+
+            gameBetViewModels = betService.AddGameBetToCollection(gameBetViewModels, updateExistingModel);
+
+            Assert.That(gameBetViewModels.First().Prediction, Is.EqualTo("2"));
+            Assert.That(gameBetViewModels.Count, Is.EqualTo(1));
+
+            gameBetViewModels = betService.AddGameBetToCollection(gameBetViewModels, addNewModel);
+
+            Assert.That(gameBetViewModels.Last().Prediction, Is.EqualTo("X"));
+            Assert.That(gameBetViewModels.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public async Task TestCreateGameBet()
+        {
+            var game1 = await repo.GetByIdAsync<Game>(1);
+            var game2 = await repo.GetByIdAsync<Game>(2);
+            var game3 = await repo.GetByIdAsync<Game>(3);
+
+            var model = await betService.CreateGameBet(game1.Id, "2");
+
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.Prediction, Is.EqualTo("2"));
+            Assert.That(model.GameId, Is.EqualTo(game1.Id));
+
+            model = await betService.CreateGameBet(game2.Id, "X");
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.Prediction, Is.EqualTo("X"));
+            Assert.That(model.GameId, Is.EqualTo(game2.Id));
+
+            model = await betService.CreateGameBet(game3.Id, "1");
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.Prediction, Is.EqualTo("1"));
+            Assert.That(model.GameId, Is.EqualTo(game3.Id));
+        }
     }
 }

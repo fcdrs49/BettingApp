@@ -256,12 +256,12 @@ namespace BettingApp.Core.Services
             return model;
         }
 
-        public List<GameBetViewModel> AddGameBetToCollection(List<GameBetViewModel> bets, int gameId, GameBetViewModel model, string prediction)
+        public List<GameBetViewModel> AddGameBetToCollection(List<GameBetViewModel> bets, GameBetViewModel model)
         {
-            if (bets.Any(b => b.GameId == gameId))
+            if (bets.Any(b => b.GameId == model.GameId))
             {
-                var bet = bets.First(b => b.GameId == gameId);
-                bet.Prediction = prediction;
+                var bet = bets.First(b => b.GameId == model.GameId);
+                bet.Prediction = model.Prediction;
                 bet.BetRate = model.BetRate;
             }
             else

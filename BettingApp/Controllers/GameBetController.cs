@@ -55,7 +55,7 @@ namespace BettingApp.Controllers
         {
             var model = await betService.CreateGameBet(gameId, prediction);
             var bets = await GetBetsFromSessionStorage();
-            bets = betService.AddGameBetToCollection(bets, gameId, model, prediction);
+            bets = betService.AddGameBetToCollection(bets, model);
 
             SetGameBetsToSessionStorage(bets);
 

@@ -118,30 +118,29 @@ namespace BettingApp.Core.Services
 
         public async Task<GameFormModel> ByIdAsync(int id)
         {
+            var game = await repo.GetByIdAsync<Game>(id);
+            guard.AgainstNull(game);
             var teams = await teamService.AllAsync();
             var competitions = await competitionService.GetAllAsync();
 
-            var game = await repo.AllReadonly<Game>()
-                .Where(g => g.Id == id)
-                .Select(g => new GameFormModel()
-                {
-                    Id = g.Id,
-                    HomeTeamId = g.HomeTeamId,
-                    AwayTeamId = g.AwayTeamId,
-                    HomeRate = g.HomeRate,
-                    DrawRate = g.DrawRate,
-                    AwayRate = g.AwayRate,
-                    CompetitionId = g.CompetitionId,
-                    DateTime = g.DateTime,
-                    AwayTeamGoals = g.AwayTeamGoals,
-                    HomeTeamGoals = g.HomeTeamGoals,
-                    Finished = g.Finished
-                })
-                .FirstAsync();
-            game.Competitions = competitions;
-            game.Teams = teams;
+            var gameModel = new GameFormModel()
+            {
+                Id = game.Id,
+                HomeTeamId = game.HomeTeamId,
+                AwayTeamId = game.AwayTeamId,
+                HomeRate = game.HomeRate,
+                DrawRate = game.DrawRate,
+                AwayRate = game.AwayRate,
+                CompetitionId = game.CompetitionId,
+                DateTime = game.DateTime,
+                AwayTeamGoals = game.AwayTeamGoals,
+                HomeTeamGoals = game.HomeTeamGoals,
+                Finished = game.Finished,
+                Competitions = competitions,
+                Teams = teams
+            };
 
-            return game;
+            return gameModel;
             
         }
 

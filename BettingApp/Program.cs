@@ -1,3 +1,4 @@
+using BettingApp.Hubs;
 using BettingApp.Infrastructure.Data;
 using BettingApp.Infrastructure.Data.Models;
 using BettingApp.ModelBinders;
@@ -43,7 +44,11 @@ builder.Services.AddSession(options =>
     options.Cookie.Name = ".GameBets";
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
+
+app.MapHub<BetRateHub>("/betRateHub");
 
 if (app.Environment.IsDevelopment())
 {
@@ -54,6 +59,8 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithRedirects("/Home/Index");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

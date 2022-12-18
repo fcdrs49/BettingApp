@@ -14,6 +14,6 @@ namespace BettingApp.Core.Contracts
         public Task UpdateBetsWhenGameCorrected(GameFormModel game);
         public Task CancelBet(int betId);
         public Task<GameBetViewModel> CreateGameBet(int id, string prediction);
-        public List<GameBetViewModel> AddGameBetToCollection(List<GameBetViewModel> bets, int gameId, GameBetViewModel model, string prediction);
+        public List<GameBetViewModel> AddGameBetToCollection(List<GameBetViewModel> bets, GameBetViewModel model);
     }
 }
