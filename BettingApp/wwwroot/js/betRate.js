@@ -43,8 +43,8 @@ let editBtn = document.getElementById("editBtn");
 if (editBtn) {
     editBtn.addEventListener("click", function (event) {
         let gameId = document.getElementById("gameId").value;
-        let finished = document.getElementById("gameFinished").value;
-        if (finished == "true") {
+        let finished = document.getElementById("gameFinished").checked;
+        if (finished) {
             let homeGoals = document.getElementById("homeGoals").value;
             let awayGoals = document.getElementById("awayGoals").value;
             connection.invoke("SetGameFinished", gameId, homeGoals, awayGoals).catch(function (err) {
