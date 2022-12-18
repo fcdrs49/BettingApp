@@ -1,6 +1,5 @@
 ﻿using BettingApp.Core.Contracts;
 using BettingApp.Core.Models.Team;
-using BettingApp.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -29,7 +28,7 @@ namespace BettingApp.Areas.Admin.Controllers
             var teams = await teamService.AllAsync();
 
             var cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(60));
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(1440));
 
             cache.Set(TeamsCacheKey, teams, cacheOptions);
 
@@ -55,7 +54,6 @@ namespace BettingApp.Areas.Admin.Controllers
             await teamService.EditAsync(model);
 
             cache.Remove(TeamsCacheKey);
-
 
             return RedirectToAction(nameof(All));
         }

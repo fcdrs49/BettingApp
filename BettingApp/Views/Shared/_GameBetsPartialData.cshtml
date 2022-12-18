@@ -78,7 +78,10 @@
             $.ajax({
                 type: "DELETE",
                 url: "/GameBet/Remove",
-                data: { gameId: this.id },
+                data: {
+                    __RequestVerificationToken: getToken(),
+                    gameId: this.id
+                },
                 dataType: "html",
                 success: function (response) {
                     $('#betGrid').html(response);

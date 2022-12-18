@@ -2,7 +2,6 @@
     $('.match-bet-option').click(function () {
         $(this).siblings().removeClass('active');
         $(this).toggleClass('active');
-        var token = getToken();
         if ($(this).hasClass('active')) {
             $.ajax({
                 type: "POST",
