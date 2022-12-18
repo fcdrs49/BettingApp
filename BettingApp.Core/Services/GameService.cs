@@ -236,13 +236,13 @@ namespace BettingApp.Core.Services
             if (upcoming)
             {
                 games = games
-                    .Where(g => g.DateTime >= DateTime.Now);
+                    .Where(g => g.DateTime >= DateTime.Now && !g.Finished);
             }
 
             if(results)
             {
                 games = games
-                    .Where(g => g.DateTime < DateTime.Now)
+                    .Where(g => g.DateTime < DateTime.Now && g.Finished)
                     .OrderByDescending(g => g.DateTime);
             }
 
